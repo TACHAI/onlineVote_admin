@@ -1,0 +1,13 @@
+.operation {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: flex-start;
+  margin-bottom: 10px;
+}
+
+.c_date {
+  .el-date-editor.el-input, .el-date-editor.el-input__inner {
+    width: 100%!important;
+  }
+}
