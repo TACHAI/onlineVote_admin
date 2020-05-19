@@ -63,7 +63,7 @@ export const constantRoutes = [
     }]
   },
   {
-    path: '/exhibition',
+    path: '/vote',
     component: Layout,
     redirect: '/vote/default',
     name: '投票模块',
@@ -90,49 +90,39 @@ export const constantRoutes = [
         meta: {
           title: '作品列表'
         }
+      }
+    ]
+  },
+  {
+    path: '/active',
+    component: Layout,
+    redirect: '/active/default',
+    meta: {
+      title: '活动模块',
+      icon: 'el-icon-s-cooperation',
+      breadcrumb: false
+    },
+    children: [
+      {
+        path: '/active/default',
+        component: () => import('@/views/active'),
+        name: 'Active',
+        meta: {
+          title: '活动报名',
+          icon: 'el-icon-star-on'
+        }
       },
       {
-        path: '/vote/:voteId/:workId(default|[1-9]\\d*)',
-        component: () => import('@/views/vote/components/operation'),
-        name: 'VoteOperation',
+        path: '/active/:activeId([1-9]\\d*)',
+        component: () => import('@/views/active/enroll'),
+        name: 'Enroll',
         hidden: true,
         meta: {
-          title: '作品新增或修改'
+          title: '报名详情'
         }
       }
     ]
   },
-  // {
-  //   path: '/active',
-  //   component: Layout,
-  //   redirect: '/active/default',
-  //   meta: {
-  //     title: '活动模块',
-  //     icon: 'el-icon-s-cooperation',
-  //     breadcrumb: false
-  //   },
-  //   children: [
-  //     {
-  //       path: '/active/default',
-  //       component: () => import('@/views/active'),
-  //       name: 'Active',
-  //       meta: {
-  //         title: '活动报名',
-  //         icon: 'el-icon-star-on'
-  //       }
-  //     },
-  //     {
-  //       path: '/active/add',
-  //       component: () => import('@/views/active/components/add'),
-  //       name: 'ActiveAdd',
-  //       hidden: true,
-  //       meta: {
-  //         title: '新增活动',
-  //         breadcrumb: false
-  //       }
-  //     }
-  //   ]
-  // },
   {
     path: '/404',
     component: () => import('@/views/404'),

@@ -11,3 +11,7 @@
     width: 100%!important;
   }
 }
+
+.tox-tinymce-aux, .tox .tox-dialog-wrap__backdrop, .tox .tox-dialog {
+  z-index: 3000!important;
+}

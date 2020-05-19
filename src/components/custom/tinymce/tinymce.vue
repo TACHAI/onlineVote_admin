@@ -1,5 +1,5 @@
 <template>
-  <editor ref="tinymec" v-model="value" :init="options" :disabled="disabled" :api-key="apiKey" @onGetContent="getContent" />
+  <editor v-model="myValue" :init="options" :disabled="disabled" :api-key="apiKey" />
 </template>
 
 <script>
@@ -55,13 +55,12 @@ import 'tinymce/plugins/indent2em/plugin.min.js' // 首行缩进
 import 'tinymce/plugins/lineheight/plugin.min.js' // 行高
 import 'tinymce/plugins/axupimgs/plugin.min.js' // 多图上传
 
+import axios from 'axios'
+import { getToken } from '../../../utils/auth'
+
 export default {
   components: {
     Editor
-  },
-  model: {
-    prop: 'text',
-    event: 'change'
   },
   props: {
     disabled: {
@@ -104,18 +103,6 @@ export default {
       type: Function,
       default() {
         return function(editor) {}
-      }
-    },
-    imagesUploadHandler: {
-      type: Function,
-      default() {
-        return function(blobInfo, succFun, failFun) {}
-      }
-    },
-    filePickerCallback: {
-      type: Function,
-      default() {
-        return function(callback, value, meta) {}
       }
     },
     placeholder: {
@@ -178,19 +165,111 @@ export default {
         // 初始化成功函数
         init_instance_callback: this.init_instance_callback,
         // 图片上传函数
-        images_upload_handler: this.images_upload_handler,
+        images_upload_handler: (blobInfo, success, fail) => {
+          const formData = new FormData()
+          formData.append('file', blobInfo.blob())
+          axios({
+            url: process.env.VUE_APP_BASE_API + '/api/upload/uploadImage',
+            headers: {
+              'Content-Type': 'multipart/form-data',
+              'Authorization': this.$store.getters.token || getToken()
+            },
+            method: 'POST',
+            data: formData
+          }).then(res => {
+            const result = res.data
+            if (result.status === 200) {
+              success(process.env.VUE_APP_BASE_API + result.link)
+            } else {
+              fail(result.msg || '上传失败')
+            }
+          }).catch(error => {
+            fail(error.msg || '上传失败')
+          })
+        },
         // 文件上传
-        file_picker_callback: this.file_picker_callback
+        file_picker_callback: (callback, value, meta) => {
+          let url = process.env.VUE_APP_BASE_API + '/api/upload/uploadFile'
+          let filetype = '.pdf, .txt, .zip, .rar, .7z, .doc, .docx, .xls, .xlsx, .ppt, .pptx, .mp3, .mp4'
+          switch (meta.filetype) {
+            case 'image':
+              filetype = '.jpg, .jpeg, .png, .gif'
+              url = process.env.VUE_APP_BASE_API + '/api/upload/uploadImage'
+              break
+            case 'media':
+              filetype = '.mp3, .mp4'
+              url = process.env.VUE_APP_BASE_API + '/api/upload/uploadVideo'
+              break
+            case 'file':
+            default:
+          }
+          const input = document.createElement('input')
+          input.setAttribute('type', 'file')
+          input.setAttribute('accept', filetype)
+          input.click()
+          input.addEventListener('change', () => {
+            const file = input.files[0]
+            const formData = new FormData()
+            formData.append('file', file)
+            axios({
+              url,
+              headers: {
+                'Content-Type': 'multipart/form-data',
+                'Authorization': this.$store.getters.token || getToken()
+              },
+              method: 'POST',
+              data: formData
+            }).then(res => {
+              const result = res.data
+              if (result.status === 200) {
+                switch (meta.filetype) {
+                  case 'image':
+                    callback(process.env.VUE_APP_BASE_API + result.link, { alt: '图片' })
+                    break
+                  case 'media':
+                    callback(process.env.VUE_APP_BASE_API + result.link)
+                    break
+                  default:
+                    callback(process.env.VUE_APP_BASE_API + result.link)
+                    break
+                }
+              }
+            })
+          })
+          // const formData = new FormData()
+          // formData.append('file', blobInfo.blob())
+          // axios({
+          //   url: process.env.VUE_APP_BASE_API + '/api/upload/uploadImage',
+          //   headers: {
+          //     'Content-Type': 'multipart/form-data',
+          //     'Authorization': this.$store.getters.token || getToken()
+          //   },
+          //   method: 'POST',
+          //   data: formData
+          // }).then(res => {
+          //   const result = res.data
+          //   if (result.status === 200) {
+          //     success(process.env.VUE_APP_BASE_API + result.link)
+          //   } else {
+          //     fail(result.msg || '上传失败')
+          //   }
+          // }).catch(error => {
+          //   fail(error.msg || '上传失败')
+          // })
+        }
       },
-      value: ''
+      myValue: ''
     }
   },
   created() {
-    this.value = this.text
+    this.myValue = this.text
   },
   methods: {
+    clear() {
+      this.myValue = ''
+    },
     getContent() {
-      this.$emit('change', this.value)
+      return this.myValue
     }
   }
 }

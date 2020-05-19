@@ -6,6 +6,8 @@ const ACTIVEUPDATE = '/api/activity/update'
 const ACTIVELIST = '/api/activity/listVOByPage'
 const ACTIVESTATUS = '/api/activity/status'
 const ACTIVEDELETE = '/api/activity/deleteById'
+const ACTIVEUSERADD = '/api/activityuser/add'
+const ACTIVEUSERLIST = '/api/activityuser/listByPage'
 
 /**
  *
@@ -62,8 +64,10 @@ export function activeDelete(id) {
 export function activeStatus(id) {
   return request({
     url: ACTIVESTATUS,
-    method: 'POST',
-    data: qs.stringify({ id })
+    method: 'GET',
+    params: {
+      id
+    }
   })
 }
 
@@ -82,6 +86,42 @@ export function activeList(pageSize, pageNumber) {
     params: {
       pageSize,
       pageNumber
+    }
+  })
+}
+
+/**
+ *
+ * @description 新增用户报名
+ * @export
+ * @param {*} data
+ * @returns
+ */
+export function activeUserAdd(data) {
+  return request({
+    url: ACTIVEUSERADD,
+    method: 'POST',
+    data: qs.stringify(data)
+  })
+}
+
+/**
+ *
+ * @description 获取报名用户详情数据
+ * @export
+ * @param {*} pageSize
+ * @param {*} pageNumber
+ * @param {*} activityId
+ * @returns
+ */
+export function activeUserList(pageSize, pageNumber, activityId) {
+  return request({
+    url: ACTIVEUSERLIST,
+    method: 'GET',
+    params: {
+      pageSize,
+      pageNumber,
+      activityId
     }
   })
 }

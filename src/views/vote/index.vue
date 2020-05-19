@@ -1,7 +1,7 @@
 <template>
   <div class="vote-page">
     <div class="operation-top">
-      <el-button size="small" type="primary" icon="el-icon-plus" @click="dialogVisible = true">新增活动</el-button>
+      <el-button size="small" type="primary" icon="el-icon-plus" @click="dialogVisible = true">新增作品主题活动</el-button>
     </div>
     <c-table ref="table" :handler="getData" @handlerlist="handlerList">
       <el-table
@@ -14,13 +14,13 @@
           type="index"
           width="60"
         />
-        <el-table-column label="主题" prop="name" width="120" />
+        <el-table-column label="主题" prop="name" />
         <el-table-column label="活动介绍">
           <template slot-scope="{row}">
             <p class="c_text_overflow">{{ row.introduction ? row.introduction : '暂无活动介绍' }}</p>
           </template>
         </el-table-column>
-        <el-table-column label="活动封面" align="center" width="180">
+        <!-- <el-table-column label="活动封面" align="center" width="180">
           <template slot-scope="{row}">
             <el-image
               v-if="row.cover"
@@ -29,7 +29,7 @@
             />
             <span v-else>暂无活动封面</span>
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column label="投稿时间" align="center" width="190">
           <template slot-scope="{row}">
             <span>{{ row.ustartTime | datetimeFormat }} ~ {{ row.uendTime | datetimeFormat }}</span>
@@ -202,7 +202,7 @@ export default {
         ustartTime: [{ required: true, message: '作品上传开始时间' }, { validator: validateStartTime }],
         uendTime: [{ required: true, message: '作品上传截止时间' }, { validator: validateEndTime1 }],
         vstartTime: [{ required: true, message: '投票开始时间' }, { validator: validateStartTime }],
-        vendTime: [{ required: true, message: '投票结束时间' }, { validator: validateEndTime2 }]
+        vendTime: [{ required: true, message: '投票截止时间' }, { validator: validateEndTime2 }]
       },
       imageUploadUrl: process.env.VUE_APP_BASE_API + '/api/upload/uploadImage',
       fileList: [],
