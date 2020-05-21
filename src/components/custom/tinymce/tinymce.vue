@@ -209,6 +209,15 @@ export default {
           input.click()
           input.addEventListener('change', () => {
             const file = input.files[0]
+            const ext = file.name.substring(file.name.lastIndexOf('.') + 1)
+            const name = file.name.substring(0, file.name.lastIndexOf('.'))
+            if (!(new RegExp(ext).test(filetype))) return this.$message.error('请上传正确的文件格式')
+            const loading = this.$loading({
+              lock: true,
+              text: '正在上传',
+              spinner: 'el-icon-loading',
+              background: 'rgba(0, 0, 0, 0)'
+            })
             const formData = new FormData()
             formData.append('file', file)
             axios({
@@ -220,42 +229,27 @@ export default {
               method: 'POST',
               data: formData
             }).then(res => {
+              loading.close()
+              this.$message.success('上传成功')
               const result = res.data
               if (result.status === 200) {
                 switch (meta.filetype) {
                   case 'image':
-                    callback(process.env.VUE_APP_BASE_API + result.link, { alt: '图片' })
+                    callback(process.env.VUE_APP_BASE_API + result.link, { alt: name })
                     break
                   case 'media':
                     callback(process.env.VUE_APP_BASE_API + result.link)
                     break
                   default:
-                    callback(process.env.VUE_APP_BASE_API + result.link)
+                    callback(process.env.VUE_APP_BASE_API + result.link, { text: name })
                     break
                 }
               }
+            }).catch(() => {
+              loading.close()
+              this.$message.error('上传失败')
             })
           })
-          // const formData = new FormData()
-          // formData.append('file', blobInfo.blob())
-          // axios({
-          //   url: process.env.VUE_APP_BASE_API + '/api/upload/uploadImage',
-          //   headers: {
-          //     'Content-Type': 'multipart/form-data',
-          //     'Authorization': this.$store.getters.token || getToken()
-          //   },
-          //   method: 'POST',
-          //   data: formData
-          // }).then(res => {
-          //   const result = res.data
-          //   if (result.status === 200) {
-          //     success(process.env.VUE_APP_BASE_API + result.link)
-          //   } else {
-          //     fail(result.msg || '上传失败')
-          //   }
-          // }).catch(error => {
-          //   fail(error.msg || '上传失败')
-          // })
         }
       },
       myValue: ''
@@ -267,6 +261,7 @@ export default {
   methods: {
     clear() {
       this.myValue = ''
+      console.log(this.myValue)
     },
     getContent() {
       return this.myValue

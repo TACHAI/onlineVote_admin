@@ -90,6 +90,16 @@ export const constantRoutes = [
         meta: {
           title: '作品列表'
         }
+      },
+      {
+        path: '/vote/:voteId([1-9]\\d*)/:workId(default|[1-9]\\d*)',
+        component: () => import('@/views/vote/operation'),
+        name: 'VoteOperation',
+        hidden: true,
+        meta: {
+          title: '作品详情',
+          noCache: true
+        }
       }
     ]
   },
@@ -113,12 +123,71 @@ export const constantRoutes = [
         }
       },
       {
+        path: '/active/edit/:activeId(default|[1-9]\\d*)',
+        component: () => import('@/views/active/edit'),
+        name: 'ActiveEdit',
+        hidden: true,
+        meta: {
+          title: '活动编辑',
+          noCache: true
+        }
+      },
+      {
         path: '/active/:activeId([1-9]\\d*)',
         component: () => import('@/views/active/enroll'),
         name: 'Enroll',
         hidden: true,
         meta: {
-          title: '报名详情'
+          title: '报名人员列表'
+        }
+      }
+    ]
+  },
+  {
+    path: '/live',
+    component: Layout,
+    redirect: '/live/default',
+    meta: {
+      title: '直播模块',
+      breadcrumb: false
+    },
+    children: [
+      {
+        path: '/live/default',
+        component: () => import('@/views/live/index'),
+        name: 'Live',
+        meta: {
+          title: '视频直播',
+          icon: 'el-icon-view'
+        }
+      }
+    ]
+  },
+  {
+    path: '/paper',
+    component: Layout,
+    redirect: '/paper/default',
+    meta: {
+      title: '答题模块',
+      breadcrumb: false
+    },
+    children: [
+      {
+        path: '/paper/default',
+        component: () => import('@/views/paper/index'),
+        name: 'Paper',
+        meta: {
+          title: '试卷管理',
+          icon: 'el-icon-picture'
+        }
+      },
+      {
+        path: '/subject/:paperId([1-9]\\d*)',
+        component: () => import('@/views/paper/subject'),
+        name: 'Subject',
+        hidden: true,
+        meta: {
+          title: '题目列表'
         }
       }
     ]

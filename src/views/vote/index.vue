@@ -1,7 +1,7 @@
 <template>
   <div class="vote-page">
     <div class="operation-top">
-      <el-button size="small" type="primary" icon="el-icon-plus" @click="dialogVisible = true">新增作品主题活动</el-button>
+      <el-button size="small" type="primary" icon="el-icon-plus" @click="dialogVisible = true">新增主题活动</el-button>
     </div>
     <c-table ref="table" :handler="getData" @handlerlist="handlerList">
       <el-table
@@ -47,7 +47,7 @@
         </el-table-column>
         <el-table-column label="操作" align="center" width="300">
           <template slot-scope="{row}">
-            <el-button type="success" size="mini" icon="el-icon-position" @click="handleClickTo(row.id)">作品展示</el-button>
+            <el-button type="success" size="mini" icon="el-icon-position" @click="handleClickTo(row.id)">投稿作品</el-button>
             <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleClickEdit(row)">修改</el-button>
             <el-button type="danger" size="mini" icon="el-icon-delete" @click="handleClickDelete(row.id)">删除</el-button>
           </template>
@@ -266,7 +266,6 @@ export default {
         this._globalLoading()
         const result = await request(data)
         this.$message.success(result.msg || '成功')
-        this.$refs.form.resetFields()
         this.hanldeReset()
         this.$refs.table.getData()
       })

@@ -106,7 +106,7 @@ export default {
     },
     addTags() {
       const { name } = this.$route
-      if (name) {
+      if (name && name !== 'VoteOperation') {
         this.$store.dispatch('tagsView/addView', this.$route)
       }
       return false

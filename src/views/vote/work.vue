@@ -2,7 +2,7 @@
   <div class="vote-exhibition-page">
     <el-page-header content="作品列表" style="padding: 10px 20px 20px;" @back="$router.go(-1)" />
     <div class="operation-top">
-      <el-button size="small" type="primary" icon="el-icon-plus" @click="dialogVisible = true">新增作品</el-button>
+      <el-button size="small" type="primary" icon="el-icon-plus" @click="$router.push('/vote/'+$route.params.voteId + '/default')">新增作品</el-button>
     </div>
     <c-table ref="table" :custom-data="[$route.params.voteId]" :handler="getData" @handlerlist="handlerList">
       <el-table
@@ -40,12 +40,12 @@
         <el-table-column label="操作" align="center" width="200">
           <template slot-scope="{row}">
             <el-button type="success" size="mini" icon="el-icon-view" @click="handleClickView(row)">预览</el-button>
-            <el-button type="success" size="mini" icon="el-icon-edit" @click="handleClickEdit(row)">修改</el-button>
+            <el-button type="success" size="mini" icon="el-icon-edit" @click="$router.push('/vote/' + $route.params.voteId + '/' + row.id)">修改</el-button>
           </template>
         </el-table-column>
       </el-table>
     </c-table>
-    <el-dialog
+    <!-- <el-dialog
       :before-close="hanldeReset"
       :visible.sync="dialogVisible"
       :title="form.id ? '修改作品' : '新增作品'"
@@ -77,7 +77,7 @@
           <el-button size="small" @click="hanldeReset">关闭</el-button>
         </el-form-item>
       </el-form>
-    </el-dialog>
+    </el-dialog> -->
 
     <el-dialog :visible.sync="viewDialogVisible" title="作品预览" :close-on-click-modal="false" width="640px">
       <div v-if="viewInfo" class="view">
@@ -90,108 +90,118 @@
 </template>
 
 <script>
-import { voteWorkList, voteWorkUpdate, voteWorkAdd } from '@/api/voteWork'
+import { voteWorkList } from '@/api/voteWork'
 export default {
   name: 'VoteWork',
   components: {
-    CTable: () => import('@/components/custom/table/tablePagination'),
-    UploadImage: () => import('@/components/custom/upload/uploadImage'),
-    Tinymce: () => import('@/components/custom/tinymce/tinymce')
+    CTable: () => import('@/components/custom/table/tablePagination')
+    // UploadImage: () => import('@/components/custom/upload/uploadImage'),
+    // Tinymce: () => import('@/components/custom/tinymce/tinymce')
   },
   data() {
     return {
       dataList: [],
       baseUrl: process.env.VUE_APP_BASE_API,
       viewDialogVisible: false,
-      viewInfo: null,
-      dialogVisible: false,
-      form: {
-        id: '',
-        name: '',
-        cover: '',
-        auther: '',
-        voteId: this.$route.params.voteId,
-        introduction: ''
-      },
-      rules: {
-        id: [],
-        name: [{ required: true, message: '请填写作品名称' }],
-        cover: [{ required: true, message: '请上传作品封面' }],
-        auther: [{ required: true, message: '请填写作者' }],
-        voteId: [{ required: true, message: '请选择活动' }],
-        introduction: []
-      },
-      fileList: [],
-      tinymceVisible: false
+      viewInfo: null
+      // dialogVisible: false,
+      // form: {
+      //   id: '',
+      //   name: '',
+      //   cover: '',
+      //   auther: '',
+      //   voteId: this.$route.params.voteId,
+      //   introduction: ''
+      // },
+      // rules: {
+      //   id: [],
+      //   name: [{ required: true, message: '请填写作品名称' }],
+      //   cover: [{ required: true, message: '请上传作品封面' }],
+      //   auther: [{ required: true, message: '请填写作者' }],
+      //   voteId: [{ required: true, message: '请选择活动' }],
+      //   introduction: []
+      // },
+      // fileList: [],
+      // tinymceVisible: false
     }
   },
-  watch: {
-    dialogVisible(value) {
-      this.$nextTick(() => {
-        this.tinymceVisible = value
-      })
-    }
-  },
+  // watch: {
+  //   dialogVisible(value) {
+  //     this.$nextTick(() => {
+  //       this.tinymceVisible = value
+  //     })
+  //   }
+  // },
   methods: {
     // 编辑
-    handleClickEdit(data) {
-      const { id, name, cover, auther, voteId, introduction } = data
-      if (cover) {
-        this.fileList = [{ name: '封面', url: process.env.VUE_APP_BASE_API + cover }]
-      }
-      this.form = {
-        id, name, cover, auther, voteId, introduction
-      }
-      this.dialogVisible = true
-    },
+    // handleClickEdit(data) {
+    //   const { id, name, cover, auther, voteId, introduction } = data
+    //   if (cover) {
+    //     this.fileList = [{ name: '封面', url: process.env.VUE_APP_BASE_API + cover }]
+    //   }
+    //   this.form = {
+    //     id, name, cover, auther, voteId, introduction
+    //   }
+    //   this.dialogVisible = true
+    // },
     // 重置表单
-    hanldeReset(done) {
-      this.fileList = []
-      this.$refs.edit.clear()
-      this.$refs.form.resetFields()
-      if (done && done instanceof Function) {
-        done()
-      } else {
-        this.dialogVisible = false
-      }
-    },
+    // hanldeReset(done) {
+    //   this.fileList = []
+    //   this.$refs.edit.clear()
+    //   this.$refs.form.resetFields()
+    //   if (done && done instanceof Function) {
+    //     done()
+    //   } else {
+    //     this.dialogVisible = false
+    //   }
+    // },
     // 提交
-    onSubmit() {
-      this.$refs.form.validate(async valid => {
-        if (!valid) return false
-        let request, data
-        if (this.form.id) {
-          request = voteWorkUpdate
-          data = Object.assign(this.form, {})
-        } else {
-          request = voteWorkAdd
-          // eslint-disable-next-line no-unused-vars
-          const { id, ...reset } = this.form
-          data = reset
-        }
-        this._globalLoading()
-        data.introduction = this.$refs.edit.getContent()
-        const result = await request(data)
-        this.$message.success(result.msg || '成功')
-        this.hanldeReset()
-        this.$refs.table.getData()
-      })
-    },
+    // onSubmit() {
+    //   this.$refs.form.validate(async valid => {
+    //     if (!valid) return false
+    //     let request, data
+    //     if (this.form.id) {
+    //       request = voteWorkUpdate
+    //       data = Object.assign(this.form, {})
+    //     } else {
+    //       request = voteWorkAdd
+    //       // eslint-disable-next-line no-unused-vars
+    //       const { id, ...reset } = this.form
+    //       data = reset
+    //     }
+    //     this._globalLoading()
+    //     data.introduction = this.$refs.edit.getContent()
+    //     const result = await request(data)
+    //     this.$message.success(result.msg || '成功')
+    //     this.hanldeReset()
+    //     this.$refs.table.getData()
+    //   })
+    // },
     handleClickView(data) {
       this.viewInfo = data
       this.viewDialogVisible = true
     },
     // 编辑
-    handleClickTo(data) {
-      this.$store.dispatch('utils/setVoteWork', data)
-      this.$router.push('/vote/' + this.$route.params.voteId + '/' + data.id)
-    },
+    // handleClickTo(data) {
+    //   this.$store.dispatch('utils/setVoteWork', data)
+    //   this.$router.push('/vote/' + this.$route.params.voteId + '/' + data.id)
+    // },
     // 获取数据
     handlerList(value) {
       this.dataList = value
     },
     getData() {
       return voteWorkList
+    }
+  },
+  beforeRouteEnter(to, from, next) {
+    if (/\/vote\/[1-9]\d*\/(default|[1-9]\d*)/.test(from.path)) {
+      console.log(1)
+      next(vm => {
+        vm.$refs.table.getData()
+      })
+    } else {
+      next()
     }
   }
 }

@@ -1,8 +1,8 @@
 <template>
   <div class="vote-operation">
     <el-page-header :content="$route.params.workId === 'default' ? '新增作品' : '修改作品'" style="padding: 10px 20px 20px;" @back="$router.go(-1)" />
-    <div class="container">
-      <el-form v-if="!loading" ref="form" :model="form" :rules="rules" label-width="110px" label-position="right">
+    <div v-if="!loading" class="container">
+      <el-form ref="form" :model="form" :rules="rules" label-width="110px" label-position="right">
         <el-form-item style="display: none;" prop="id">
           <el-input v-model="form.id" size="small" />
         </el-form-item>
@@ -20,7 +20,7 @@
           <el-input v-model="form.voteId" />
         </el-form-item>
         <el-form-item label="作品详情">
-          <tinymce v-model="form.introduction" />
+          <tinymce ref="edit" :text="form.introduction" />
           <el-input v-model="form.introduction" type="textarea" style="display: none;" />
         </el-form-item>
         <el-form-item>
@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import { voteWorkUpdate, voteWorkAdd } from '@/api/voteWork'
+import { voteWorkUpdate, voteWorkAdd, voteWorkSelectById } from '@/api/voteWork'
 export default {
   name: 'VoteOperation',
   components: {
@@ -61,21 +61,29 @@ export default {
       fileList: []
     }
   },
-  mounted() {
+  async created() {
     const { workId } = this.$route.params
-    if (workId !== 'default') {
-      const { id, name, cover, auther, voteId, introduction } = this.$store.getters.voteWork
-      this.form.id = id
-      this.form.name = name
-      this.form.cover = cover
-      this.form.auther = auther
-      this.form.voteId = voteId
-      this.form.introduction = introduction
-      if (cover) {
-        this.fileList = [{ name: '封面', url: process.env.VUE_APP_BASE_API + cover }]
+    if (workId === 'default') {
+      this.loading = false
+    } else {
+      try {
+        const result = await voteWorkSelectById(workId)
+        const { id, name, cover, auther, voteId, introduction } = result.data
+        this.form.id = id
+        this.form.name = name
+        this.form.cover = cover
+        this.form.auther = auther
+        this.form.voteId = voteId
+        this.form.introduction = introduction
+        if (cover) {
+          this.fileList = [{ name: '封面', url: process.env.VUE_APP_BASE_API + cover }]
+        }
+      } catch (e) {
+        console.log(e)
+      } finally {
+        this.loading = false
       }
     }
-    this.loading = false
   },
   methods: {
     // 提交
@@ -93,6 +101,7 @@ export default {
           data = reset
         }
         this._globalLoading()
+        data.introduction = this.$refs.edit.getContent()
         const result = await request(data)
         this.$message.success(result.msg || '成功')
         this.$router.go(-1)

@@ -8,6 +8,7 @@ const ACTIVESTATUS = '/api/activity/status'
 const ACTIVEDELETE = '/api/activity/deleteById'
 const ACTIVEUSERADD = '/api/activityuser/add'
 const ACTIVEUSERLIST = '/api/activityuser/listByPage'
+const ACTIVESELECTBYID = '/api/activity/selectById  '
 
 /**
  *
@@ -123,5 +124,20 @@ export function activeUserList(pageSize, pageNumber, activityId) {
       pageNumber,
       activityId
     }
+  })
+}
+
+/**
+ *
+ * @description 根据id获取活动详情
+ * @export
+ * @param {*} id
+ * @returns
+ */
+export function activeSelectById(id) {
+  return request({
+    url: ACTIVESELECTBYID,
+    method: 'POST',
+    data: qs.stringify({ id })
   })
 }

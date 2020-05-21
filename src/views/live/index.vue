@@ -1,9 +1,9 @@
 <template>
   <div class="vote-theme-page">
     <div class="operation-top">
-      <el-button size="small" type="primary" icon="el-icon-plus" @click="$router.push('/active/edit/default')">新增活动</el-button>
+      <el-button size="small" type="primary" icon="el-icon-plus" @click="dialogVisible = true">新增直播</el-button>
     </div>
-    <c-table ref="table" :handler="getData" @handlerlist="handlerList">
+    <c-table ref="table" :handler="getData" :custom-data="['', '']" @handlerlist="handlerList">
       <el-table
         :data="dataList"
         style="width: 100%"
@@ -51,57 +51,51 @@
         </el-table-column>
       </el-table>
     </c-table>
-    <!-- <el-dialog :before-close="hanldeReset" :visible.sync="dialogVisible" append-to-body :title="form.id ? '修改活动' : '新增活动'" :close-on-click-modal="false">
+    <el-dialog :before-close="hanldeReset" :visible.sync="dialogVisible" append-to-body :title="form.id ? '修改活动' : '新增活动'" :close-on-click-modal="false">
       <el-form ref="form" :model="form" :rules="rules" label-width="110px" label-position="right">
         <el-form-item style="display: none;" prop="id">
           <el-input v-model="form.id" size="small" />
         </el-form-item>
-        <el-form-item label="活动名称" prop="title">
-          <el-input v-model="form.title" size="small" placeholder="活动名称" />
+        <el-form-item label="直播主题" prop="title">
+          <el-input v-model="form.title" size="small" placeholder="直播主题" />
         </el-form-item>
-        <el-form-item label="活动封面" prop="cover">
+        <el-form-item label="直播封面" prop="cover">
           <upload-image v-model="form.cover" :file-list="fileList" />
           <el-input v-model="form.cover" style="display: none;" size="small" />
         </el-form-item>
-        <el-form-item label="发起人" prop="auther">
-          <el-input v-model="form.auther" size="small" placeholder="发起人" />
+        <el-form-item label="演讲人" prop="auther">
+          <el-input v-model="form.auther" size="small" placeholder="演讲人" />
         </el-form-item>
-        <el-form-item label="组织单位" prop="organizer">
-          <el-input v-model="form.organizer" size="small" placeholder="组织单位" />
+        <el-form-item label="直播地点" prop="address">
+          <el-input v-model="form.address" size="small" placeholder="直播地点" />
         </el-form-item>
-        <el-form-item label="活动地址" prop="address">
-          <el-input v-model="form.address" size="small" placeholder="活动地址" />
+        <el-form-item label="直播介绍" prop="introduction">
+          <el-input v-model="form.introduction" type="textarea" size="small" placeholder="直播介绍" />
         </el-form-item>
-        <el-form-item label="活动时间" prop="activitytime">
-          <el-date-picker
-            v-model="form.activitytime"
-            type="datetime"
-            placeholder="活动时间"
-            size="small"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            :default-value="form.activitytime"
-          />
+        <el-form-item label="允许回看" prop="replay">
+          <el-radio-group v-model="form.replay">
+            <el-radio :label="0">回看</el-radio>
+            <el-radio :label="1">不回看</el-radio>
+          </el-radio-group>
         </el-form-item>
-        <el-form-item label="活动详情" prop="detail">
-          <tinymce v-if="tinymceVisible" ref="edit" :text="form.detail" />
-          <el-input v-model="form.detail" style="display: none;" />
+        <el-form-item v-show="form.status === 2" label="视频" prop="video">
+          <el-input v-model="form.video" style="display: none;" />
         </el-form-item>
         <el-form-item>
           <el-button size="small" type="primary" @click="onSubmit">提交</el-button>
           <el-button size="small" @click="hanldeReset">关闭</el-button>
         </el-form-item>
       </el-form>
-    </el-dialog> -->
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { activeDelete, activeStatus, activeList } from '@/api/active'
+import { liveDelete, liveAdd, liveUpdate, liveList, liveSelectById } from '@/api/live'
 export default {
-  name: 'Active',
+  name: 'Live',
   components: {
-    // Tinymce: () => import('@/components/custom/tinymce/tinymce'),
-    // UploadImage: () => import('@/components/custom/upload/uploadImage'),
+    UploadImage: () => import('@/components/custom/upload/uploadImage'),
     CTable: () => import('@/components/custom/table/tablePagination')
   },
   data() {
@@ -111,52 +105,37 @@ export default {
     //   return callback()
     // }
     return {
-      // dialogVisible: false,
-      // form: {
-      //   id: '',
-      //   title: '',
-      //   cover: '',
-      //   auther: '',
-      //   organizer: '',
-      //   address: '',
-      //   activitytime: '',
-      //   detail: ''
-      // },
-      // rules: {
-      //   id: [],
-      //   title: [{ required: true, message: '请填写活动名称' }],
-      //   cover: [],
-      //   auther: [],
-      //   organizer: [],
-      //   address: [],
-      //   activitytime: [{ required: true, message: '请选择活动时间' }, { validator: validateStartTime }],
-      //   detail: ''
-      // },
-      // imageUploadUrl: process.env.VUE_APP_BASE_API + '/api/upload/uploadImage',
-      // fileList: [],
+      dialogVisible: false,
+      form: {
+        id: '',
+        title: '',
+        cover: '',
+        auther: '',
+        address: '',
+        introduction: '',
+        replay: 0,
+        status: 0,
+        video: ''
+      },
+      rules: {
+        id: [],
+        title: [{ required: true, message: '请填写直播主题' }],
+        cover: [],
+        auther: [],
+        address: [],
+        introduction: [],
+        replay: [{ required: true, message: '请选择是否会看' }],
+        status: [{ required: true, message: '请选择状态' }],
+        video: []
+      },
+      imageUploadUrl: process.env.VUE_APP_BASE_API + '/api/upload/uploadImage',
+      imageVideo: process.env.VUE_APP_BASE_API + '/api/upload/uploadVideo',
+      fileList: [],
       dataList: [],
       baseUrl: process.env.VUE_APP_BASE_API
     }
   },
-  // watch: {
-  //   dialogVisible(value) {
-  //     this.$nextTick(() => {
-  //       this.tinymceVisible = value
-  //     })
-  //   }
-  // },
   methods: {
-    // 报名详情
-    handleClickTo(id) {
-      this.$router.push('/active/' + id)
-    },
-    // 切换状态
-    async handleClickStatus(id) {
-      this._globalLoading('正在切换上下架状态')
-      const result = await activeStatus(id)
-      this.$message.success(result.msg || '更新状态成功')
-      this.$refs.table.getData()
-    },
     // 编辑
     // handleClickEdit(data) {
     //   this.$store.dispatch('utils/setActive', data)
@@ -165,7 +144,7 @@ export default {
     // 删除
     async handleClickDelete(id) {
       this._globalLoading('正在进行删除操作')
-      const result = await activeDelete(id)
+      const result = await liveDelete(id)
       this.$message.success(result.msg || '删除成功')
       this.$refs.table.getData()
     },
@@ -174,42 +153,39 @@ export default {
       this.dataList = value
     },
     getData() {
-      return activeList
-    }
+      return liveList
+    },
     // 重置表单
-    // hanldeReset(done) {
-    //   this.fileList = []
-    //   this.$refs.form.resetFields()
-    //   this.$refs.edit.clear()
-    //   if (done && done instanceof Function) {
-    //     done()
-    //   } else {
-    //     this.dialogVisible = false
-    //   }
-    // },
+    hanldeReset(done) {
+      this.fileList = []
+      this.$refs.form.resetFields()
+      if (done && done instanceof Function) {
+        done()
+      } else {
+        this.dialogVisible = false
+      }
+    },
     // 提交
-    // onSubmit() {
-    //   this.$refs.form.validate(async valid => {
-    //     if (!valid) return false
-    //     let request, data
-    //     if (this.form.id) {
-    //       request = activeUpdate
-    //       data = Object.assign(this.form, {})
-    //     } else {
-    //       request = activeAdd
-    //       // eslint-disable-next-line no-unused-vars
-    //       const { id, ...reset } = this.form
-    //       data = reset
-    //     }
-    //     data.detail = this.$refs.edit.getContent()
-    //     this._globalLoading()
-    //     const result = await request(data)
-    //     this.$message.success(result.msg || '成功')
-    //     this.$refs.form.resetFields()
-    //     this.hanldeReset()
-    //     this.$refs.table.getData()
-    //   })
-    // }
+    onSubmit() {
+      this.$refs.form.validate(async valid => {
+        if (!valid) return false
+        let request, data
+        if (this.form.id) {
+          request = liveUpdate
+          data = Object.assign(this.form, {})
+        } else {
+          request = liveAdd
+          // eslint-disable-next-line no-unused-vars
+          const { id, ...reset } = this.form
+          data = reset
+        }
+        this._globalLoading()
+        const result = await request(data)
+        this.$message.success(result.msg || '成功')
+        this.hanldeReset()
+        this.$refs.table.getData()
+      })
+    }
   }
 }
 </script>

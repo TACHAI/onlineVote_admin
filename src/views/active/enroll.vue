@@ -1,6 +1,6 @@
 <template>
   <div class="enroll-page">
-    <el-page-header content="报名详情" style="padding: 10px 20px 20px;" @back="$router.go(-1)" />
+    <el-page-header content="报名人员列表" style="padding: 10px 20px 20px;" @back="$router.go(-1)" />
     <div class="operation-top">
       <el-button size="small" type="primary" icon="el-icon-plus" @click="dialogVisible = true">新增报名用户</el-button>
     </div>
@@ -113,7 +113,6 @@ export default {
         this._globalLoading()
         const result = await activeUserAdd(this.form)
         this.$message.success(result.msg || '成功')
-        this.$refs.form.resetFields()
         this.hanldeReset()
         this.$refs.table.getData()
       })

@@ -12,7 +12,8 @@ const getters = {
   roles: state => state.user.roles,
   permission_routes: state => state.permission.routes,
   errorLogs: state => state.errorLog.logs,
-  loading: state => state.utils.loading,
-  voteWork: state => state.utils.voteWork
+  loading: state => state.utils.loading
+  // voteWork: state => state.utils.voteWork
+  // active: state => state.utils.active
 }
 export default getters
