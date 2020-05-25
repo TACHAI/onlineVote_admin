@@ -15,11 +15,11 @@
           width="60"
         />
         <el-table-column label="主题" prop="name" />
-        <el-table-column label="活动介绍">
+        <!-- <el-table-column label="活动介绍">
           <template slot-scope="{row}">
             <p class="c_text_overflow">{{ row.introduction ? row.introduction : '暂无活动介绍' }}</p>
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <!-- <el-table-column label="活动封面" align="center" width="180">
           <template slot-scope="{row}">
             <el-image

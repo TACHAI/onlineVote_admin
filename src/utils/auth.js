@@ -21,11 +21,12 @@ export function getToken() {
 }
 
 export function setToken(token) {
-  return store.set(TokenKey, token)
+  console.log(token)
+  store.set(TokenKey, token)
 }
 
 export function removeToken() {
-  return store.remove(TokenKey)
+  store.remove(TokenKey)
 }
 
 export function getAdminName() {
@@ -33,9 +34,9 @@ export function getAdminName() {
 }
 
 export function setAdminName(name) {
-  return store.set(AdminName, name)
+  store.set(AdminName, name)
 }
 
 export function removeAdminName() {
-  return store.remove(AdminName)
+  store.remove(AdminName)
 }
