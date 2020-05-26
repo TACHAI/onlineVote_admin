@@ -2,10 +2,11 @@ import request from '@/utils/request'
 import qs from 'qs'
 
 const LIVEADD = '/api/live/add'
-const LIVELIST = '/api/live/listByPage'
-const LIVESELECTBYID = '/api/live/selectById'
+const LIVELIST = '/api/live/backlistByPage'
+// const LIVESELECTBYID = '/api/live/selectById'
 const LIVEUPDATE = '/api/live/update'
 const LIVEDELETE = '/api/live/delete'
+const LIVESTREAM = '/api/backlive/getBackLiveById'
 
 /**
  *
@@ -67,20 +68,44 @@ export function liveList(pageSize, pageNumber, liveName, userId) {
  * @param {*} id
  * @returns
  */
-export function liveSelectById(id) {
-  return request({
-    url: LIVESELECTBYID,
-    method: 'GET',
-    params: {
-      id
-    }
-  })
-}
+// export function liveSelectById(id) {
+//   return request({
+//     url: LIVESELECTBYID,
+//     method: 'GET',
+//     params: {
+//       id
+//     }
+//   })
+// }
 
+/**
+ *
+ * @description 删除
+ * @export
+ * @param {*} id
+ * @returns
+ */
 export function liveDelete(id) {
   return request({
     url: LIVEDELETE,
     method: 'POST',
     data: qs.stringify({ id })
+  })
+}
+
+/**
+ *
+ * @description 获取直播流信息
+ * @export
+ * @param {*} id
+ * @returns
+ */
+export function getLiveStream(id) {
+  return request({
+    url: LIVESTREAM,
+    method: 'GET',
+    params: {
+      id
+    }
   })
 }

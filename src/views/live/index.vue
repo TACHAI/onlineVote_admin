@@ -14,7 +14,7 @@
           type="index"
           width="60"
         />
-        <el-table-column prop="title" label="活动名称" />
+        <el-table-column prop="title" label="直播标题" />
         <!-- <el-table-column label="活动封面" align="center" width="200">
           <template slot-scope="{row}">
             <el-image
@@ -25,26 +25,31 @@
             <span v-else>暂无活动封面</span>
           </template>
         </el-table-column> -->
-        <el-table-column label="活动地址">
+        <el-table-column label="演讲人">
+          <template slot-scope="{row}">
+            <span>{{ row.auther ? row.auther : '暂无' }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="直播地点">
           <template slot-scope="{row}">
             <span>{{ row.address ? row.address : '暂无' }}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="活动时间" width="200">
+        <el-table-column align="center" label="直播公告" width="200">
           <template slot-scope="{row}">
-            <span>{{ row.activitytime | datetimeFormat }}</span>
+            <span>{{ row.introduction }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="报名人数" prop="count" />
+        <!-- <el-table-column label="报名人数" prop="count" /> -->
         <el-table-column align="center" label="状态" width="80">
           <template slot-scope="{row}">
-            <el-tag :type="row.status === '0' ? 'danger' : 'success'">{{ row.status === '0' ? '下架' : '上架' }}</el-tag>
+            <el-tag :type="row.status === 0 ? 'success' : 'danger'">{{ row.status === 0 ? '直播' : '往期回顾' }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column label="操作" width="380">
           <template slot-scope="{row}">
-            <el-button type="success" size="mini" icon="el-icon-view" @click="handleClickTo(row.id)">查看</el-button>
-            <el-button type="success" size="mini" icon="el-icon-shop" @click="handleClickStatus(row.id)">上/下架</el-button>
+            <el-button type="success" size="mini" icon="el-icon-view" @click="getLiveStream(row.id)">查看</el-button>
+            <el-button type="success" size="mini" icon="el-icon-shop" @click="handleClickStatus(row)">上/下架</el-button>
             <el-button type="primary" size="mini" icon="el-icon-edit" @click="$router.push('/active/edit/' + row.id)">修改</el-button>
             <el-button type="danger" size="mini" icon="el-icon-delete" @click="handleClickDelete(row.id)">删除</el-button>
           </template>
@@ -87,11 +92,48 @@
         </el-form-item>
       </el-form>
     </el-dialog>
+    <el-dialog :visible.sync="streamDialogVisible" append-to-body title="直播流信息" :close-on-click-modal="false">
+      <el-form :model="streamInfo" label-width="120px" label-position="right">
+        <el-form-item label="流名称">
+          <el-input v-model="streamInfo.videoStreamName" />
+        </el-form-item>
+        <el-form-item label="流ID">
+          <el-input v-model="streamInfo.stramId" />
+        </el-form-item>
+        <el-form-item label="流数据ID">
+          <el-input v-model="streamInfo.fileAddress" />
+        </el-form-item>
+        <el-form-item label="推流地址">
+          <el-input v-model="streamInfo.pushStramAddress" />
+        </el-form-item>
+        <el-form-item label="M3U8拉流地址">
+          <el-input v-model="streamInfo.m3u8PullAddress" />
+        </el-form-item>
+        <el-form-item label="RTMP拉流地址">
+          <el-input v-model="streamInfo.rtmpPullAddress" />
+        </el-form-item>
+        <el-form-item label="M3U8下载地址">
+          <el-input v-model="streamInfo.m3u8Address" />
+        </el-form-item>
+        <el-form-item label="MP4下载地址">
+          <el-input v-model="streamInfo.mp4Address" />
+        </el-form-item>
+        <el-form-item label="原始流名称">
+          <el-input v-model="streamInfo.pullStreamAddress" />
+        </el-form-item>
+        <el-form-item label="是否回看">
+          <el-radio-group v-model="streamInfo.replay">
+            <el-radio :label="0">回看</el-radio>
+            <el-radio :label="1">不回看</el-radio>
+          </el-radio-group>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { liveDelete, liveAdd, liveUpdate, liveList, liveSelectById } from '@/api/live'
+import { liveDelete, liveAdd, liveUpdate, liveList, getLiveStream } from '@/api/live'
 export default {
   name: 'Live',
   components: {
@@ -132,7 +174,20 @@ export default {
       imageVideo: process.env.VUE_APP_BASE_API + '/api/upload/uploadVideo',
       fileList: [],
       dataList: [],
-      baseUrl: process.env.VUE_APP_BASE_API
+      baseUrl: process.env.VUE_APP_BASE_API,
+      streamInfo: {
+        videoStreamName: '', // 视频流名称
+        stramId: '', // 流id
+        fileAddress: '', // 直播数据主键
+        pushStramAddress: '', // 推流地址
+        m3u8PullAddress: '', // m3u8拉流地址
+        rtmpPullAddress: '', // rtmp拉流地址
+        m3u8Address: '', // m3u8文件下载地址
+        mp4Address: '', // mp4下载地址
+        pullStreamAddress: '', // 未拼接过的流名称
+        replay: 0 // 是否允许回看
+      },
+      streamDialogVisible: false
     }
   },
   methods: {
@@ -141,6 +196,38 @@ export default {
     //   this.$store.dispatch('utils/setActive', data)
     //   this.$router.push('/active/edit/' + data.id)
     // },
+
+    /** 获取直播流信息 */
+    async getLiveStream(id) {
+      const result = await getLiveStream(id)
+      const { videoStreamName, stramId, fileAddress, pushStramAddress, m3u8PullAddress, rtmpPullAddress, m3u8Address, mp4Address, pullStreamAddress, replay } = result.data
+      this.streamInfo = {
+        videoStreamName,
+        stramId,
+        fileAddress,
+        pushStramAddress,
+        m3u8PullAddress,
+        rtmpPullAddress,
+        m3u8Address,
+        mp4Address,
+        pullStreamAddress,
+        replay
+      }
+      this.streamDialogVisible = true
+    },
+    /** 修改状态 */
+    async handleClickStatus(data) {
+      const { id, title, cover, auther, address, introduction, replay, video } = data
+      let { status } = data
+      if (status === 0) {
+        status = 2
+      } else {
+        status = 0
+      }
+      const result = await liveUpdate({ id, title, cover, auther, address, introduction, replay, status, video })
+      this.$message.success(result.msg || '修改成功')
+      this.$refs.table.getData()
+    },
     // 删除
     async handleClickDelete(id) {
       this._globalLoading('正在进行删除操作')

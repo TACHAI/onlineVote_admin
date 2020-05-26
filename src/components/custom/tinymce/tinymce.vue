@@ -144,9 +144,9 @@ export default {
         hidden_input: false,
         // readonly: true, // 只读模式
         height: this.height, // 编辑器高度
-        min_height: this.min_height,
-        fontsize_formats: this.fontsize_formats,
-        font_formats: this.font_formats,
+        min_height: this.minHeight,
+        fontsize_formats: this.fontsizeFormats,
+        font_formats: this.fontFormats,
         importcss_append: true,
         branding: true, // 右下角技术支持显示隐藏
         contextmenu: 'bold italic underline anchor undo redo copy', // 上下文右键菜单
@@ -159,11 +159,11 @@ export default {
         images_reuse_filename: true,
         toolbar: this.toolbar, // 工具条
         plugins: this.plugins, // 插件
-        images_upload_base_path: this.images_upload_base_path,
+        images_upload_base_path: this.imagesUploadBasePath,
         // 初始化前函数
         setup: this.setup,
         // 初始化成功函数
-        init_instance_callback: this.init_instance_callback,
+        init_instance_callback: this.initInstanceCallback,
         // 图片上传函数
         images_upload_handler: (blobInfo, success, fail) => {
           const formData = new FormData()

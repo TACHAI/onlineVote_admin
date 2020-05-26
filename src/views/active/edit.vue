@@ -63,7 +63,7 @@ export default {
         title: '',
         cover: '',
         auther: '',
-        organizer: '',
+        organizer: '九江市图书馆',
         address: '',
         activitytime: '',
         detail: ''
@@ -71,7 +71,7 @@ export default {
       rules: {
         id: [],
         title: [{ required: true, message: '请填写活动名称' }],
-        cover: [],
+        cover: [{ required: true, message: '请上传活动封面' }],
         auther: [],
         organizer: [],
         address: [],
