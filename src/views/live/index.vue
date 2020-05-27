@@ -41,7 +41,7 @@
           </template>
         </el-table-column>
         <!-- <el-table-column label="报名人数" prop="count" /> -->
-        <el-table-column align="center" label="状态" width="80">
+        <el-table-column align="center" label="状态" width="100">
           <template slot-scope="{row}">
             <el-tag :type="row.status === 0 ? 'success' : 'danger'">{{ row.status === 0 ? '直播' : '往期回顾' }}</el-tag>
           </template>
@@ -50,7 +50,7 @@
           <template slot-scope="{row}">
             <el-button type="success" size="mini" icon="el-icon-view" @click="getLiveStream(row.id)">查看</el-button>
             <el-button type="success" size="mini" icon="el-icon-shop" @click="handleClickStatus(row)">上/下架</el-button>
-            <el-button type="primary" size="mini" icon="el-icon-edit" @click="$router.push('/active/edit/' + row.id)">修改</el-button>
+            <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleClickEdit(row)">修改</el-button>
             <el-button type="danger" size="mini" icon="el-icon-delete" @click="handleClickDelete(row.id)">删除</el-button>
           </template>
         </el-table-column>
@@ -84,6 +84,7 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item v-show="form.status === 2" label="视频" prop="video">
+          <upload-file v-model="form.video" :file-list="fileList2" />
           <el-input v-model="form.video" style="display: none;" />
         </el-form-item>
         <el-form-item>
@@ -138,7 +139,8 @@ export default {
   name: 'Live',
   components: {
     UploadImage: () => import('@/components/custom/upload/uploadImage'),
-    CTable: () => import('@/components/custom/table/tablePagination')
+    CTable: () => import('@/components/custom/table/tablePagination'),
+    UploadFile: () => import('@/components/custom/upload/uploadFile')
   },
   data() {
     // const validateStartTime = (rule, value, callback) => {
@@ -162,7 +164,7 @@ export default {
       rules: {
         id: [],
         title: [{ required: true, message: '请填写直播主题' }],
-        cover: [],
+        cover: [{ required: true, message: '请填写直播封面' }],
         auther: [],
         address: [],
         introduction: [],
@@ -187,15 +189,31 @@ export default {
         pullStreamAddress: '', // 未拼接过的流名称
         replay: 0 // 是否允许回看
       },
-      streamDialogVisible: false
+      streamDialogVisible: false,
+      fileList2: []
     }
   },
   methods: {
     // 编辑
-    // handleClickEdit(data) {
-    //   this.$store.dispatch('utils/setActive', data)
-    //   this.$router.push('/active/edit/' + data.id)
-    // },
+    handleClickEdit(data) {
+      const { id, title, cover, auther, address, introduction, replay, status, video } = data
+      if (cover) {
+        this.fileList = [{ url: process.env.VUE_APP_BASE_API + cover, name: cover }]
+      }
+      if (video) {
+        this.fileList2 = [{ url: process.env.VUE_APP_BASE_API + video, name: video }]
+      }
+      this.form.id = id
+      this.form.title = title
+      this.form.cover = cover
+      this.form.auther = auther
+      this.form.address = address
+      this.form.introduction = introduction
+      this.form.replay = replay
+      this.form.status = status
+      this.form.video = video
+      this.dialogVisible = true
+    },
 
     /** 获取直播流信息 */
     async getLiveStream(id) {
@@ -244,13 +262,25 @@ export default {
     },
     // 重置表单
     hanldeReset(done) {
+      this.form.id = ''
+      this.form.title = ''
+      this.form.cover = ''
+      this.form.auther = ''
+      this.form.address = ''
+      this.form.introduction = ''
+      this.form.replay = 0
+      this.form.status = 0
+      this.form.video = ''
       this.fileList = []
-      this.$refs.form.resetFields()
-      if (done && done instanceof Function) {
-        done()
-      } else {
-        this.dialogVisible = false
-      }
+      this.fileList2 = []
+      this.$nextTick(() => {
+        this.$refs.form.clearValidate()
+        if (done && done instanceof Function) {
+          done()
+        } else {
+          this.dialogVisible = false
+        }
+      })
     },
     // 提交
     onSubmit() {

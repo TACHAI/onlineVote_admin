@@ -21,11 +21,11 @@
           </template>
         </el-table-column>
         <el-table-column label="答题时间(分钟)" prop="examtime" />
-        <el-table-column label="试卷介绍">
+        <!-- <el-table-column label="试卷介绍">
           <template slot-scope="{row}">
             <span>{{ row.introduction ? row.introduction : '暂无' }}</span>
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column label="操作" width="280">
           <template slot-scope="{row}">
             <el-button type="success" size="mini" icon="el-icon-view" @click="handleClickTo(row.id)">题目</el-button>

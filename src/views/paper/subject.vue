@@ -27,7 +27,7 @@
     </c-table>
     <el-dialog width="60%" :before-close="hanldeReset" :visible.sync="dialogVisible" append-to-body :title="form.id ? '设置答案' : '新增题目'" :close-on-click-modal="false">
       <el-row :gutter="20">
-        <el-col :span="form.id ? 12 : 24">
+        <el-col :span="form.id ? 10 : 24">
           <el-form ref="form" :model="form" :rules="rules" label-width="80px" label-position="right">
             <el-form-item style="display: none;" prop="id">
               <el-input v-model="form.id" size="small" />
@@ -58,7 +58,7 @@
             </el-form-item>
           </el-form>
         </el-col>
-        <el-col :span="form.id ? 12 : 0">
+        <el-col :span="form.id ? 14 : 0">
           <div>
             <el-button icon="el-icon-plus" size="mini" type="primary" @click="answerDialogVisible = true">新增答案</el-button>
             <el-table :data="answerList">
@@ -74,7 +74,7 @@
         </el-col>
       </el-row>
     </el-dialog>
-    <el-dialog :before-close="hanldeResetAnswer" :visible.sync="answerDialogVisible" append-to-body :title="answerForm.id ? '修改答案' : '新增答案'" :close-on-click-modal="false">
+    <el-dialog width="50%" :before-close="hanldeResetAnswer" :visible.sync="answerDialogVisible" append-to-body :title="answerForm.id ? '修改答案' : '新增答案'" :close-on-click-modal="false">
       <el-form ref="answerForm" :model="answerForm" :rules="answerRules" label-width="80px" label-position="right">
         <el-form-item style="display: none;" prop="id">
           <el-input v-model="answerForm.id" />
@@ -86,8 +86,8 @@
           <el-input v-model="answerForm.answer" size="mini" placeholder="答案" />
         </el-form-item>
         <el-form-item>
-          <el-button size="small" type="primary" @click="onSubmitAnswer">提交</el-button>
-          <el-button size="small" @click="hanldeResetAnswer">关闭</el-button>
+          <el-button size="mini" type="primary" @click="onSubmitAnswer">提交</el-button>
+          <el-button size="mini" @click="hanldeResetAnswer">关闭</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
