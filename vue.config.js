@@ -38,8 +38,8 @@ module.exports = {
     },
     proxy: {
       [process.env.VUE_APP_BASE_API]: {
-        target: 'http://192.168.20.244:9000',
-        // target: 'http://wxzxfw.jjlib.cn',
+        // target: 'http://192.168.20.244:9000',
+        target: 'http://wxzxfw.jjlib.cn',
         ws: true,
         changeOrigin: true,
         pathRewrite: {

@@ -148,10 +148,20 @@ export const constantRoutes = [
     component: Layout,
     redirect: '/live/default',
     meta: {
-      title: '直播模块',
-      breadcrumb: false
+      title: '直播管理',
+      // breadcrumb: false,
+      icon: 'el-icon-video-camera-solid'
     },
     children: [
+      {
+        path: '/live/notice',
+        component: () => import('@/views/live/notice'),
+        name: 'LiveNotice',
+        meta: {
+          title: '直播预告',
+          icon: 'el-icon-s-order'
+        }
+      },
       {
         path: '/live/default',
         component: () => import('@/views/live/index'),

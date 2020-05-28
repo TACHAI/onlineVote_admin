@@ -7,6 +7,8 @@ const LIVELIST = '/api/live/backlistByPage'
 const LIVEUPDATE = '/api/live/update'
 const LIVEDELETE = '/api/live/delete'
 const LIVESTREAM = '/api/backlive/getBackLiveById'
+const LIVENOTICE = '/api/live/updateLiveReservation'
+const GETLIVENOTICE = '/api/live/liveReservation'
 
 /**
  *
@@ -107,5 +109,28 @@ export function getLiveStream(id) {
     params: {
       id
     }
+  })
+}
+
+/**
+ *
+ * @description 更新活动预告
+ * @export
+ * @param {*} data
+ * @returns
+ */
+export function liveNotice(data) {
+  return request({
+    url: LIVENOTICE,
+    method: 'POST',
+    data: qs.stringify(data)
+  })
+}
+
+export function getLiveNotice() {
+  return request({
+    url: GETLIVENOTICE,
+    method: 'GET',
+    params: {}
   })
 }
