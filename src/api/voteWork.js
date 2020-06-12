@@ -5,6 +5,7 @@ const VOTEWORKADD = '/api/votework/add'
 const VOTEWORKUPDATE = '/api/votework/update'
 const VOTEWORKLIST = '/api/votework/listByPage'
 const VOTEWORKSELECTBYID = '/api/votework/selectById'
+const VOTEWORKDELETE = '/api/votework/deleteById'
 
 /**
  *
@@ -71,3 +72,16 @@ export function voteWorkSelectById(id) {
     data: qs.stringify({ id })
   })
 }
+
+/**
+ * @description 删除
+ * @param {*} id
+ */
+export function voteWordDeleteById(id) {
+  return request({
+    url: VOTEWORKDELETE,
+    method: 'POST',
+    data: qs.stringify({ id })
+  })
+}
+

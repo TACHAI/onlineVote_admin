@@ -38,7 +38,7 @@
         <el-table-column label="报名人数" prop="count" />
         <el-table-column align="center" label="状态" width="80">
           <template slot-scope="{row}">
-            <el-tag :type="row.status === '0' ? 'danger' : 'success'">{{ row.status === '0' ? '下架' : '上架' }}</el-tag>
+            <el-tag :type="row.status === '1' ? 'danger' : 'success'">{{ row.status === '1' ? '下架' : '上架' }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column label="操作" width="380">

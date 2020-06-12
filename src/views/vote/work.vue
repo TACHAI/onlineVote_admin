@@ -37,10 +37,11 @@
             <span>{{ row.pv ? row.pv : 0 }}票</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作" align="center" width="200">
+        <el-table-column label="操作" align="center" width="280">
           <template slot-scope="{row}">
             <el-button type="success" size="mini" icon="el-icon-view" @click="handleClickView(row)">预览</el-button>
             <el-button type="success" size="mini" icon="el-icon-edit" @click="$router.push('/vote/' + $route.params.voteId + '/' + row.id)">修改</el-button>
+            <el-button type="danger" size="mini" icon="el-icon-delete" @click="handleClickDelete(row.id)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -90,7 +91,7 @@
 </template>
 
 <script>
-import { voteWorkList } from '@/api/voteWork'
+import { voteWorkList, voteWordDeleteById } from '@/api/voteWork'
 export default {
   name: 'VoteWork',
   components: {
@@ -133,6 +134,12 @@ export default {
   //   }
   // },
   methods: {
+    async handleClickDelete(id) {
+      this._globalLoading()
+      const result = await voteWordDeleteById(id)
+      this.$message.success(result.msg || '删除成功')
+      this.$refs.table.getData()
+    },
     // 编辑
     // handleClickEdit(data) {
     //   const { id, name, cover, auther, voteId, introduction } = data
@@ -196,7 +203,6 @@ export default {
   },
   beforeRouteEnter(to, from, next) {
     if (/\/vote\/[1-9]\d*\/(default|[1-9]\d*)/.test(from.path)) {
-      console.log(1)
       next(vm => {
         vm.$refs.table.getData()
       })

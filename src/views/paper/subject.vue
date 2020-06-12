@@ -285,3 +285,9 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+ table {
+   min-width: 100%!important;
+ }
+</style>
