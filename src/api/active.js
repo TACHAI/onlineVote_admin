@@ -9,6 +9,7 @@ const ACTIVEDELETE = '/api/activity/deleteById'
 const ACTIVEUSERADD = '/api/activityuser/add'
 const ACTIVEUSERLIST = '/api/activityuser/listByPage'
 const ACTIVESELECTBYID = '/api/activity/selectById  '
+const ACTIVEEXPORT = '/api/activityuser/exportExcelUser'
 
 /**
  *
@@ -139,5 +140,20 @@ export function activeSelectById(id) {
     url: ACTIVESELECTBYID,
     method: 'POST',
     data: qs.stringify({ id })
+  })
+}
+
+/**
+ *
+ * @description 导出名单
+ * @export
+ * @param {*} activityId
+ * @returns
+ */
+export function exportUser(activityId) {
+  return request({
+    url: ACTIVEEXPORT,
+    method: 'POST',
+    data: qs.stringify({ activityId })
   })
 }

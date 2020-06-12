@@ -3,6 +3,7 @@
     <el-page-header content="报名人员列表" style="padding: 10px 20px 20px;" @back="$router.go(-1)" />
     <div class="operation-top">
       <el-button size="small" type="primary" icon="el-icon-plus" @click="dialogVisible = true">新增报名用户</el-button>
+      <el-button size="small" type="success" icon="el-icon-position" @click="handleClickExport">导出报名名单</el-button>
     </div>
     <c-table ref="table" :handler="getData" :custom-data="[$route.params.activeId]" @handlerlist="handlerList">
       <el-table
@@ -61,7 +62,7 @@
 </template>
 
 <script>
-import { activeUserAdd, activeUserList } from '@/api/active'
+import { activeUserAdd, activeUserList, exportUser } from '@/api/active'
 export default {
   name: 'Enroll',
   components: {
@@ -90,6 +91,10 @@ export default {
     }
   },
   methods: {
+    // 导出名单
+    handleClickExport() {
+      exportUser(this.$route.params.activeId)
+    },
     // 获取数据
     handlerList(value) {
       this.dataList = value
