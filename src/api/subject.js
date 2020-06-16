@@ -5,6 +5,7 @@ const SUBJECTADD = '/api/paperquestion/add'
 const SUBJECTRDELETE = '/api/paperquestion/deleteById'
 const SUBJECTLIST = '/api/paperquestion/listByPage'
 const SUBJECTUPDATE = '/api/paperquestion/update'
+const SUBJECTIMPORT = '/api/paperquestion/import'
 
 /**
  *
@@ -68,5 +69,22 @@ export function subjectDelete(id) {
     url: SUBJECTRDELETE,
     method: 'POST',
     data: qs.stringify({ id })
+  })
+}
+
+/**
+ *
+ * @description 导入题目
+ * @export
+ * @param {*} paperId
+ * @param {*} formData
+ * @returns
+ */
+export function subjectImport(formData) {
+  return request({
+    url: SUBJECTIMPORT,
+    method: 'POST',
+    data: formData,
+    headers: { 'Content-Type': 'multipart/form-data' }
   })
 }

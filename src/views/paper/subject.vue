@@ -3,32 +3,54 @@
     <el-page-header content="题目列表" style="padding: 10px 20px 20px;" @back="$router.go(-1)" />
     <div class="operation-top">
       <el-button size="small" type="primary" icon="el-icon-plus" @click="dialogVisible = true">新增题目</el-button>
+      <el-button size="small" type="success" icon="el-icon-position" @click="handeClickImport">数据导入</el-button>
+      <el-button size="small" type="warning" icon="el-icon-download"><a download="模板" href="/template.xls">模板下载</a></el-button>
     </div>
-    <c-table ref="table" :handler="getData" :custom-data="[$route.params.paperId]" @handlerlist="handlerList">
-      <el-table
-        :data="dataList"
-        style="width: 100%"
-        border
-      >
-        <el-table-column
-          label="序号"
-          type="index"
-          width="60"
-        />
+    <c-table
+      ref="table"
+      :handler="getData"
+      :custom-data="[$route.params.paperId]"
+      @handlerlist="handlerList"
+    >
+      <el-table :data="dataList" style="width: 100%" border>
+        <el-table-column label="序号" type="index" width="60" />
         <el-table-column prop="questionName" label="题目" />
         <el-table-column prop="point" label="分值" />
         <el-table-column label="操作">
           <template slot-scope="{row}">
-            <el-button type="success" size="mini" icon="el-icon-view" @click="handleClickEdit(row)">设置答案</el-button>
-            <el-button type="danger" size="mini" icon="el-icon-delete" @click="handleClickDelete(row.id)">删除</el-button>
+            <el-button
+              type="success"
+              size="mini"
+              icon="el-icon-view"
+              @click="handleClickEdit(row)"
+            >设置答案</el-button>
+            <el-button
+              type="danger"
+              size="mini"
+              icon="el-icon-delete"
+              @click="handleClickDelete(row.id)"
+            >删除</el-button>
           </template>
         </el-table-column>
       </el-table>
     </c-table>
-    <el-dialog width="60%" :before-close="hanldeReset" :visible.sync="dialogVisible" append-to-body :title="form.id ? '设置答案' : '新增题目'" :close-on-click-modal="false">
+    <el-dialog
+      width="60%"
+      :before-close="hanldeReset"
+      :visible.sync="dialogVisible"
+      append-to-body
+      :title="form.id ? '设置答案' : '新增题目'"
+      :close-on-click-modal="false"
+    >
       <el-row :gutter="20">
         <el-col :span="form.id ? 10 : 24">
-          <el-form ref="form" :model="form" :rules="rules" label-width="80px" label-position="right">
+          <el-form
+            ref="form"
+            :model="form"
+            :rules="rules"
+            label-width="80px"
+            label-position="right"
+          >
             <el-form-item style="display: none;" prop="id">
               <el-input v-model="form.id" size="small" />
             </el-form-item>
@@ -46,11 +68,21 @@
             </el-form-item>
             <el-form-item v-show="form.id" label="答案" prop="answer">
               <el-select v-model="form.answer" clearable placeholder="选择答案">
-                <el-option v-for="item of answerList" :key="item.id" :value="item.id" :label="item.answer" />
+                <el-option
+                  v-for="item of answerList"
+                  :key="item.id"
+                  :value="item.id"
+                  :label="item.answer"
+                />
               </el-select>
             </el-form-item>
             <el-form-item v-show="form.id" label="答案解析" prop="answerDetail">
-              <el-input v-model="form.answerDetail" type="textarea" size="small" placeholder="答案解析" />
+              <el-input
+                v-model="form.answerDetail"
+                type="textarea"
+                size="small"
+                placeholder="答案解析"
+              />
             </el-form-item>
             <el-form-item>
               <el-button size="small" type="primary" @click="onSubmit">提交</el-button>
@@ -60,7 +92,12 @@
         </el-col>
         <el-col :span="form.id ? 14 : 0">
           <div>
-            <el-button icon="el-icon-plus" size="mini" type="primary" @click="answerDialogVisible = true">新增答案</el-button>
+            <el-button
+              icon="el-icon-plus"
+              size="mini"
+              type="primary"
+              @click="answerDialogVisible = true"
+            >新增答案</el-button>
             <el-table :data="answerList">
               <el-table-column prop="answer" />
               <el-table-column align="center">
@@ -74,8 +111,21 @@
         </el-col>
       </el-row>
     </el-dialog>
-    <el-dialog width="50%" :before-close="hanldeResetAnswer" :visible.sync="answerDialogVisible" append-to-body :title="answerForm.id ? '修改答案' : '新增答案'" :close-on-click-modal="false">
-      <el-form ref="answerForm" :model="answerForm" :rules="answerRules" label-width="80px" label-position="right">
+    <el-dialog
+      width="50%"
+      :before-close="hanldeResetAnswer"
+      :visible.sync="answerDialogVisible"
+      append-to-body
+      :title="answerForm.id ? '修改答案' : '新增答案'"
+      :close-on-click-modal="false"
+    >
+      <el-form
+        ref="answerForm"
+        :model="answerForm"
+        :rules="answerRules"
+        label-width="80px"
+        label-position="right"
+      >
         <el-form-item style="display: none;" prop="id">
           <el-input v-model="answerForm.id" />
         </el-form-item>
@@ -95,8 +145,19 @@
 </template>
 
 <script>
-import { subjectAdd, subjectUpdate, subjectList, subjectDelete } from '@/api/subject'
-import { answerAdd, answerUpdate, answerDelete, answerList } from '@/api/answer'
+import {
+  subjectAdd,
+  subjectUpdate,
+  subjectList,
+  subjectDelete,
+  subjectImport
+} from '@/api/subject'
+import {
+  answerAdd,
+  answerUpdate,
+  answerDelete,
+  answerList
+} from '@/api/answer'
 export default {
   name: 'Subject',
   components: {
@@ -141,17 +202,40 @@ export default {
           answer: []
         }
       }
-      return Object.assign({
-        id: [],
-        type: [],
-        questionName: [{ required: true, message: '请填写题目' }],
-        point: [{ required: true, message: '请选择分值' }],
-        answerDetail: [],
-        paperId: [{ required: true, message: '请填写试卷id' }]
-      }, json)
+      return Object.assign(
+        {
+          id: [],
+          type: [],
+          questionName: [{ required: true, message: '请填写题目' }],
+          point: [{ required: true, message: '请选择分值' }],
+          answerDetail: [],
+          paperId: [{ required: true, message: '请填写试卷id' }]
+        },
+        json
+      )
     }
   },
   methods: {
+    // 模板下载
+    handeClickImport() {
+      const input = document.createElement('input')
+      input.type = 'file'
+      input.accept = '.xls,.xlxs'
+      input.click()
+      input.addEventListener('change', async() => {
+        this._globalLoading('正在进行导入操作')
+        const formData = new FormData()
+        formData.append('paperId', this.$route.params.paperId)
+        formData.append('file', input.files[0])
+        try {
+          await subjectImport(formData)
+          this.$message.success('导入成功')
+          this.$refs.table.reset()
+        } catch (e) {
+          console.log(e)
+        }
+      })
+    },
     // 修改答案
     handleClickEditAnswer(data) {
       const { answer, id } = data
@@ -287,7 +371,7 @@ export default {
 </script>
 
 <style lang="scss">
- table {
-   min-width: 100%!important;
- }
+table {
+  min-width: 100% !important;
+}
 </style>

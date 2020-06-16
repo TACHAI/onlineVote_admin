@@ -199,6 +199,15 @@ export const constantRoutes = [
         meta: {
           title: '题目列表'
         }
+      },
+      {
+        path: '/rank/:paperId([1-9]\\d*)',
+        component: () => import('@/views/rank/index'),
+        name: 'Rank',
+        hidden: true,
+        meta: {
+          title: '排行榜'
+        }
       }
     ]
   },

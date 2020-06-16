@@ -26,8 +26,9 @@
             <span>{{ row.introduction ? row.introduction : '暂无' }}</span>
           </template>
         </el-table-column> -->
-        <el-table-column label="操作" width="280">
+        <el-table-column label="操作" width="360">
           <template slot-scope="{row}">
+            <el-button type="success" size="mini" icon="el-icon-rank" @click="handleClickToRank(row.id)">排行</el-button>
             <el-button type="success" size="mini" icon="el-icon-view" @click="handleClickTo(row.id)">题目</el-button>
             <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleClickEdit(row)">修改</el-button>
             <el-button type="danger" size="mini" icon="el-icon-delete" @click="handleClickDelete(row.id)">删除</el-button>
@@ -93,6 +94,11 @@ export default {
     }
   },
   methods: {
+    // 进入排行榜
+    handleClickToRank(id) {
+      this.$router.push('/rank/' + id)
+    },
+    // 进入题目列表
     handleClickTo(id) {
       this.$router.push('/subject/' + id)
     },

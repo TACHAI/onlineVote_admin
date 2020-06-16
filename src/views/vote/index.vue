@@ -62,12 +62,12 @@
         <el-form-item label="活动名称" prop="name">
           <el-input v-model="form.name" size="small" placeholder="请填写活动介绍" />
         </el-form-item>
-        <el-form-item label="活动介绍" prop="introduction">
-          <el-input v-model="form.introduction" :show-word-limit="true" :autosize="{ minRows: 2, maxRows: 6 }" type="textarea" size="small" placeholder="请填写活动介绍" />
-        </el-form-item>
         <el-form-item label="活动封面" prop="cover">
           <upload-image v-model="form.cover" :file-list="fileList" />
           <el-input v-model="form.cover" style="display: none;" size="small" />
+        </el-form-item>
+        <el-form-item label="活动介绍" prop="introduction">
+          <el-input v-model="form.introduction" :show-word-limit="true" :autosize="{ minRows: 2, maxRows: 6 }" type="textarea" size="small" placeholder="请填写活动介绍" />
         </el-form-item>
         <el-form-item label="组织单位" prop="organizer">
           <el-input v-model="form.organizer" size="small" placeholder="请填组织单位" />
@@ -196,7 +196,7 @@ export default {
         id: [],
         name: [{ required: true, message: '请填写活动名称' }],
         introduction: [],
-        cover: [],
+        cover: [{ required: true, message: '请上传封面图' }],
         organizer: [],
         status: [{ required: true, type: 'number', message: '请选择状态' }],
         ustartTime: [{ required: true, message: '作品上传开始时间' }, { validator: validateStartTime }],

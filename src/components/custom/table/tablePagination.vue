@@ -41,6 +41,10 @@ export default {
     this.getData()
   },
   methods: {
+    reset() {
+      this.pageNumber = 1
+      this.getData()
+    },
     // 修改分页
     handleCurrentChange(pageNumber) {
       this.pageNumber = pageNumber

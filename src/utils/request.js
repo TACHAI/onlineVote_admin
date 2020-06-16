@@ -18,7 +18,13 @@ service.interceptors.request.use(
     }
 
     if (config.method.toLocaleLowerCase() === 'get') {
-      config.params.date = new Date().getTime()
+      if (config.params) {
+        config.params.t = new Date().getTime()
+      } else {
+        config.params = {
+          t: new Date().getTime()
+        }
+      }
     }
 
     return config
