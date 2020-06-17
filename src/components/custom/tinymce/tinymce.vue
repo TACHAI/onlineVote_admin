@@ -7,6 +7,7 @@
 // eslint-disable-next-line no-unused-vars
 import tinymce from 'tinymce/tinymce'
 import Editor from '@tinymce/tinymce-vue'
+import 'tinymce/icons/default/icons.min.js'
 import 'tinymce/themes/silver'
 import 'tinymce/plugins/advlist' // 高级列表(一栏列表)
 import 'tinymce/plugins/anchor' // 锚点
@@ -129,7 +130,7 @@ export default {
   data() {
     return {
       options: {
-        base_url: '/tinymce/',
+        // base_url: '/tinymce/',
         language_url: '/tinymce/tinymce_languages/langs/zh_CN.js', // 语言包
         language: 'zh_CN', // 语言
         skin_url: '/tinymce/skins/ui/oxide', // 皮肤样式路径
