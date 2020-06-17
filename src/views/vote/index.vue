@@ -66,9 +66,6 @@
           <upload-image v-model="form.cover" :file-list="fileList" />
           <el-input v-model="form.cover" style="display: none;" size="small" />
         </el-form-item>
-        <el-form-item label="活动介绍" prop="introduction">
-          <el-input v-model="form.introduction" :show-word-limit="true" :autosize="{ minRows: 2, maxRows: 6 }" type="textarea" size="small" placeholder="请填写活动介绍" />
-        </el-form-item>
         <el-form-item label="组织单位" prop="organizer">
           <el-input v-model="form.organizer" size="small" placeholder="请填组织单位" />
         </el-form-item>
@@ -142,6 +139,9 @@
             :inactive-value="1"
           />
         </el-form-item>
+        <el-form-item label="活动介绍" prop="introduction">
+          <vue-editor v-model="form.introduction" :customModules="customModulesForEditor" :editorOptions="editorSettings" :editor-toolbar="customToolbar" :useCustomImageHandler="true" placeholder="说得什么吧..." @image-added="handleImageAdded" />
+        </el-form-item>
         <el-form-item>
           <el-button size="small" type="primary" @click="onSubmit">提交</el-button>
           <el-button size="small" @click="hanldeReset">关闭</el-button>
@@ -154,11 +154,18 @@
 <script>
 import { voteAdd, voteUpdate, voteDelete, voteList } from '@/api/vote'
 import { datetimeFormat2 } from '@/utils/utils'
+import { VueEditor, Quill } from 'vue2-editor'
+import { ImageDrop } from 'quill-image-drop-module'
+import ImageResize from 'quill-image-resize-module'
+Quill.register('modules/imageDrop', ImageDrop)
+Quill.register('modules/imageResize', ImageResize)
+import request from '@/utils/request'
 export default {
   name: 'Vote',
   components: {
     UploadImage: () => import('@/components/custom/upload/uploadImage'),
-    CTable: () => import('@/components/custom/table/tablePagination')
+    CTable: () => import('@/components/custom/table/tablePagination'),
+    VueEditor
   },
   data() {
     const validateStartTime = (rule, value, callback) => {
@@ -207,10 +214,56 @@ export default {
       imageUploadUrl: process.env.VUE_APP_BASE_API + '/api/upload/uploadImage',
       fileList: [],
       dataList: [],
-      baseUrl: process.env.VUE_APP_BASE_API
+      baseUrl: process.env.VUE_APP_BASE_API,
+      customToolbar: [
+        ['bold', 'italic', 'underline', 'strike'],
+        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+        [{ 'size': [] }],
+        [{ 'script': 'sub' }, { 'script': 'super' }],
+        [{ 'indent': '-1' }, { 'indent': '+1' }],
+        [{ 'color': [] }, { 'background': [] }], // 字体颜色，字体背景颜色
+        [{ 'align': [] }], // 对齐方式
+        ['link'],
+        ['clean'],
+        ['image']
+      ],
+      customModulesForEditor: [
+        { alias: 'imageDrop', module: ImageDrop },
+        { alias: 'imageResize', module: ImageResize }
+      ],
+      editorSettings: {
+        modules: {
+          imageDrop: true,
+          imageResize: {}
+        }
+      }
     }
   },
   methods: {
+    handleImageAdded(file, Editor, cursorLocation, resetUploader) {
+      this._globalLoading('正在上传图片')
+      var formData = new FormData()
+      formData.append('file', file)
+      request({
+        url: '/api/upload/uploadImage',
+        method: 'POST',
+        data: formData,
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+        .then(result => {
+          if (result.status === 200) {
+            Editor.insertEmbed(cursorLocation, 'image', process.env.VUE_APP_BASE_API + result.link)
+          } else {
+            this.$message.warning('上传失败')
+          }
+          resetUploader()
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
     handleClickTo(id) {
       this.$router.push('/vote/' + id)
     },

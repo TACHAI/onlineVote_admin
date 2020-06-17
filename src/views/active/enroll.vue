@@ -3,7 +3,9 @@
     <el-page-header content="报名人员列表" style="padding: 10px 20px 20px;" @back="$router.go(-1)" />
     <div class="operation-top">
       <el-button size="small" type="primary" icon="el-icon-plus" @click="dialogVisible = true">新增报名用户</el-button>
-      <el-button size="small" type="success" icon="el-icon-position" @click="handleClickExport">导出报名名单</el-button>
+      <el-button size="small" type="success" icon="el-icon-position">
+        <a :href="downloadUrl" download="报名名单">导入报名名单</a>
+      </el-button>
     </div>
     <c-table ref="table" :handler="getData" :custom-data="[$route.params.activeId]" @handlerlist="handlerList">
       <el-table
@@ -88,6 +90,11 @@ export default {
         detail: []
       },
       dataList: []
+    }
+  },
+  computed: {
+    downloadUrl() {
+      return process.env.VUE_APP_BASE_API + '/api/activityuser/exportExcelUser?activityId=' + this.$route.params.activeId + '&t=' + new Date().getTime()
     }
   },
   methods: {

@@ -12,8 +12,8 @@
         <el-table-column label="试卷名" prop="paperName" />
         <el-table-column label="昵称" prop="pickname" />
         <el-table-column label="头像" align="center">
-          <template slot-scope="scope">
-            <img :src="scope.headimgurl" width="100px" alt="">
+          <template slot-scope="{row}">
+            <img :src="row.headimgurl" width="100px" alt="头像">
           </template>
         </el-table-column>
         <el-table-column label="分数" prop="mark" />

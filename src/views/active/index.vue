@@ -43,7 +43,7 @@
         </el-table-column>
         <el-table-column label="操作" width="380">
           <template slot-scope="{row}">
-            <el-button type="success" size="mini" icon="el-icon-view" @click="handleClickTo(row.id)">查看</el-button>
+            <el-button type="success" size="mini" icon="el-icon-view" @click="handleClickTo(row.id)">名单</el-button>
             <el-button type="success" size="mini" icon="el-icon-shop" @click="handleClickStatus(row.id)">上/下架</el-button>
             <el-button type="primary" size="mini" icon="el-icon-edit" @click="$router.push('/active/edit/' + row.id)">修改</el-button>
             <el-button type="danger" size="mini" icon="el-icon-delete" @click="handleClickDelete(row.id)">删除</el-button>
