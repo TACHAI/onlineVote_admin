@@ -21,13 +21,14 @@
           </template>
         </el-table-column>
         <el-table-column label="答题时间(分钟)" prop="examtime" />
-        <!-- <el-table-column label="试卷介绍">
+        <el-table-column align="center" label="状态" width="80">
           <template slot-scope="{row}">
-            <span>{{ row.introduction ? row.introduction : '暂无' }}</span>
+            <el-tag :type="row.status === 1 ? 'danger' : 'success'">{{ row.status === 1 ? '下架' : '上架' }}</el-tag>
           </template>
-        </el-table-column> -->
-        <el-table-column label="操作" width="360">
+        </el-table-column>
+        <el-table-column label="操作" width="450">
           <template slot-scope="{row}">
+            <el-button type="warning" size="mini" @click="handleClickChangeStatus(row.id)">上/下架</el-button>
             <el-button type="success" size="mini" icon="el-icon-rank" @click="handleClickToRank(row.id)">排行</el-button>
             <el-button type="success" size="mini" icon="el-icon-view" @click="handleClickTo(row.id)">题目</el-button>
             <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleClickEdit(row)">修改</el-button>
@@ -64,7 +65,7 @@
 </template>
 
 <script>
-import { paperAdd, paperUpdate, paperList, paperDelete } from '@/api/paper'
+import { paperAdd, paperUpdate, paperList, paperDelete, paperStatus } from '@/api/paper'
 export default {
   name: 'Paper',
   components: {
@@ -94,6 +95,16 @@ export default {
     }
   },
   methods: {
+    // 上下架
+    async handleClickChangeStatus(id) {
+      this._globalLoading('正在切换状态')
+      try {
+        await paperStatus(id)
+        this.$refs.table.getData()
+      } catch (e) {
+        console.log(e)
+      }
+    },
     // 进入排行榜
     handleClickToRank(id) {
       this.$router.push('/rank/' + id)

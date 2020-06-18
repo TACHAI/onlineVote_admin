@@ -5,6 +5,7 @@ const PAPERADD = '/api/paper/add'
 const PAPAERDELETE = '/api/paper/deleteById'
 const PAPERLIST = '/api/paper/listByPage'
 const PAPERUPDATE = '/api/paper/update'
+const PAPERSTATUS = '/api/paper/status'
 
 /**
  *
@@ -67,5 +68,19 @@ export function paperDelete(id) {
     url: PAPAERDELETE,
     method: 'POST',
     data: qs.stringify({ id })
+  })
+}
+
+/**
+ * @description 上下架
+ * @param {*} id
+ */
+export function paperStatus(id) {
+  return request({
+    url: PAPERSTATUS,
+    method: 'GET',
+    params: {
+      id
+    }
   })
 }

@@ -4,7 +4,7 @@
     <div class="operation-top">
       <el-button size="small" type="primary" icon="el-icon-plus" @click="dialogVisible = true">新增报名用户</el-button>
       <el-button size="small" type="success" icon="el-icon-position">
-        <a :href="downloadUrl" download="报名名单">导入报名名单</a>
+        <a :href="downloadUrl" download="报名名单">导出报名名单</a>
       </el-button>
     </div>
     <c-table ref="table" :handler="getData" :custom-data="[$route.params.activeId]" @handlerlist="handlerList">
