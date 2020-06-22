@@ -17,6 +17,11 @@
           </template>
         </el-table-column>
         <el-table-column label="分数" prop="mark" />
+        <el-table-column label="答题时间">
+          <template slot-scope="{row}">
+            {{ row.createTime | datetimeFormat }}
+          </template>
+        </el-table-column>
       </el-table>
     </c-table>
   </div>
