@@ -63,6 +63,77 @@ export const constantRoutes = [
     }]
   },
   {
+    path: '/active',
+    component: Layout,
+    redirect: '/active/default',
+    meta: {
+      title: '投票活动模块',
+      icon: 'el-icon-s-cooperation',
+      breadcrumb: false
+    },
+    children: [
+      {
+        path: '/active/default',
+        component: () => import('@/views/active'),
+        name: 'Active',
+        meta: {
+          title: '投票活动',
+          icon: 'el-icon-star-on'
+        }
+      },
+      {
+        path: '/active/edit/:activeId(default|[1-9]\\d*)',
+        component: () => import('@/views/active/edit'),
+        name: 'ActiveEdit',
+        hidden: true,
+        meta: {
+          title: '活动编辑',
+          noCache: true
+        }
+      },
+      {
+        path: '/active/:activeId([1-9]\\d*)',
+        component: () => import('@/views/active/enroll'),
+        name: 'Enroll',
+        hidden: true,
+        meta: {
+          title: '报名人员列表'
+        }
+      }
+    ]
+  },
+
+  {
+    path: '/work',
+    component: Layout,
+    redirect: '/work/default',
+    meta: {
+      title: '作品管理',
+      icon: 'el-icon-video-camera-solid'
+    },
+    children: [
+      {
+        path: '/work/default',
+        component: ()=>import('@/views/work/'),
+        name: 'Work',
+        meta: {
+          title: '投票作品',
+          icon: 'el-icon-star-on'
+        }
+      },
+      {
+        path: '/work/edit/:workId(default|[1-9]\\d*)',
+        component: () => import('@/views/work/edit'),
+        name: 'WorkEdit',
+        hidden: true,
+        meta: {
+          title: '作品编辑',
+          noCache: true
+        }
+      },
+    ]
+  },
+  {
     path: '/vote',
     component: Layout,
     redirect: '/vote/default',
@@ -99,114 +170,6 @@ export const constantRoutes = [
         meta: {
           title: '作品详情',
           noCache: true
-        }
-      }
-    ]
-  },
-  {
-    path: '/active',
-    component: Layout,
-    redirect: '/active/default',
-    meta: {
-      title: '活动模块',
-      icon: 'el-icon-s-cooperation',
-      breadcrumb: false
-    },
-    children: [
-      {
-        path: '/active/default',
-        component: () => import('@/views/active'),
-        name: 'Active',
-        meta: {
-          title: '活动报名',
-          icon: 'el-icon-star-on'
-        }
-      },
-      {
-        path: '/active/edit/:activeId(default|[1-9]\\d*)',
-        component: () => import('@/views/active/edit'),
-        name: 'ActiveEdit',
-        hidden: true,
-        meta: {
-          title: '活动编辑',
-          noCache: true
-        }
-      },
-      {
-        path: '/active/:activeId([1-9]\\d*)',
-        component: () => import('@/views/active/enroll'),
-        name: 'Enroll',
-        hidden: true,
-        meta: {
-          title: '报名人员列表'
-        }
-      }
-    ]
-  },
-  {
-    path: '/live',
-    component: Layout,
-    redirect: '/live/default',
-    meta: {
-      title: '直播管理',
-      // breadcrumb: false,
-      icon: 'el-icon-video-camera-solid'
-    },
-    children: [
-      {
-        path: '/live/notice',
-        component: () => import('@/views/live/notice'),
-        name: 'LiveNotice',
-        meta: {
-          title: '直播预告',
-          icon: 'el-icon-s-order'
-        }
-      },
-      {
-        path: '/live/default',
-        component: () => import('@/views/live/index'),
-        name: 'Live',
-        meta: {
-          title: '视频直播',
-          icon: 'el-icon-view'
-        }
-      }
-    ]
-  },
-  {
-    path: '/paper',
-    component: Layout,
-    redirect: '/paper/default',
-    meta: {
-      title: '答题模块',
-      breadcrumb: false
-    },
-    children: [
-      {
-        path: '/paper/default',
-        component: () => import('@/views/paper/index'),
-        name: 'Paper',
-        meta: {
-          title: '试卷管理',
-          icon: 'el-icon-picture'
-        }
-      },
-      {
-        path: '/subject/:paperId([1-9]\\d*)',
-        component: () => import('@/views/paper/subject'),
-        name: 'Subject',
-        hidden: true,
-        meta: {
-          title: '题目列表'
-        }
-      },
-      {
-        path: '/rank/:paperId([1-9]\\d*)',
-        component: () => import('@/views/rank/index'),
-        name: 'Rank',
-        hidden: true,
-        meta: {
-          title: '排行榜'
         }
       }
     ]

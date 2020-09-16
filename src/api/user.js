@@ -1,9 +1,9 @@
 import request from '@/utils/request'
 import qs from 'qs'
 
-const USERLOGIN = '/api/user/login'
-const USERUPDATEPASSWORD = '/api/user/updatePassword'
-const USEREXIT = '/api/user/exit'
+const USERLOGIN = '/api/back/user/login'
+const USERUPDATEPASSWORD = '/api/back/user/updatePassword'
+const USEREXIT = '/api/back/user/exit'
 
 /**
  * @description 登录

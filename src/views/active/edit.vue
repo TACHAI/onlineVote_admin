@@ -5,21 +5,31 @@
       <el-form-item style="display: none;" prop="id">
         <el-input v-model="form.id" size="small" />
       </el-form-item>
-      <el-form-item label="活动名称" prop="title">
-        <el-input v-model="form.title" size="small" placeholder="活动名称" />
+      <el-form-item label="投票活动名称" prop="name">
+        <el-input v-model="form.name" size="small" placeholder="投票活动名称" />
       </el-form-item>
-      <el-form-item label="活动封面" prop="cover">
-        <upload-image v-model="form.cover" :file-list="fileList" />
-        <el-input v-model="form.cover" style="display: none;" size="small" />
+      <el-form-item label="投票活动封面" prop="cover">
+        <upload-image v-model="form.image" :file-list="fileList" />
+        <el-input v-model="form.image" style="display: none;" size="small" />
       </el-form-item>
-      <el-form-item label="发起人" prop="auther">
-        <el-input v-model="form.auther" size="small" placeholder="发起人" />
+      <el-form-item label="投票类型" prop="type">
+        <template>
+          <el-radio v-model="form.type" label="0">主题活动</el-radio>
+          <el-radio v-model="form.type" label="1">本馆活动</el-radio>
+        </template>
       </el-form-item>
-      <el-form-item label="组织单位" prop="organizer">
-        <el-input v-model="form.organizer" size="small" placeholder="组织单位" />
+      <el-form-item label="参赛方式" prop="address">
+        <el-input v-model="form.entryMethod"
+                  type="textarea"
+                  maxlength="300"
+                  show-word-limit
+                  placeholder="参赛方式" />
       </el-form-item>
-      <el-form-item label="活动地址" prop="address">
-        <el-input v-model="form.address" size="small" placeholder="活动地址" />
+      <el-form-item label="参赛对象" prop="participants">
+        <el-input v-model="form.participants" type="textarea"
+                  maxlength="300"
+                  show-word-limit
+                  placeholder="参赛对象" />
       </el-form-item>
       <el-form-item label="活动时间" prop="activitytime">
         <el-date-picker
@@ -31,9 +41,13 @@
           :default-value="form.activitytime"
         />
       </el-form-item>
-      <el-form-item label="活动详情" prop="detail">
-        <tinymce ref="edit" :text="form.detail" />
-        <el-input v-model="form.detail" style="display: none;" />
+      <el-form-item label="活动详情" prop="content">
+<!--        <tinymce ref="edit" :text="form.content" />-->
+        <el-input v-model="form.content"
+                  type="textarea"
+                  placeholder="请输入内容"
+                  maxlength="300"
+                  show-word-limit />
       </el-form-item>
       <el-form-item>
         <el-button size="small" type="primary" @click="onSubmit">提交</el-button>
@@ -48,7 +62,7 @@ import { datetimeFormat2 } from '../../utils/utils'
 export default {
   name: 'ActiveEdit',
   components: {
-    Tinymce: () => import('@/components/custom/tinymce/tinymce'),
+    // Tinymce: () => import('@/components/custom/tinymce/tinymce'),
     UploadImage: () => import('@/components/custom/upload/uploadImage')
   },
   data() {
@@ -60,23 +74,22 @@ export default {
     return {
       form: {
         id: '',
-        title: '',
-        cover: '',
-        auther: '',
-        organizer: '九江市图书馆',
-        address: '',
+        name: '',
+        image: '',
+        type:1,
+        entryMethod: '',
+        participants: '',
         activitytime: '',
-        detail: ''
+        content: ''
       },
       rules: {
         id: [],
-        title: [{ required: true, message: '请填写活动名称' }],
-        cover: [{ required: true, message: '请上传活动封面' }],
-        auther: [],
-        organizer: [],
-        address: [],
-        activitytime: [{ required: true, message: '请选择活动时间' }, { validator: validateStartTime }],
-        detail: ''
+        name: [{ required: true, message: '请填写投票活动名称' }],
+        image: [{ required: true, message: '请上传投票活动封面' }],
+        entryMethod: [],
+        participants: [],
+        activitytime: [{ required: true, message: '请选择投票活动时间' }, { validator: validateStartTime }],
+        content: ''
       },
       imageUploadUrl: process.env.VUE_APP_BASE_API + '/api/upload/uploadImage',
       fileList: [],
@@ -90,17 +103,16 @@ export default {
     } else {
       try {
         const result = await activeSelectById(activeId)
-        const { id, title, cover, auther, organizer, address, activitytime, detail } = result.data
+        const { id, name, image, entryMethod, participants, activitytime, content } = result.data
         this.form.id = id
-        this.form.title = title
-        this.form.cover = cover
-        this.form.auther = auther
-        this.form.organizer = organizer
-        this.form.address = address
+        this.form.name = name
+        this.form.image = image
+        this.form.entryMethod = entryMethod
+        this.form.participants = participants
         this.form.activitytime = datetimeFormat2(activitytime)
-        this.form.detail = detail
-        if (cover) {
-          this.fileList = [{ name: '封面', url: process.env.VUE_APP_BASE_API + cover }]
+        this.form.content = content
+        if (image) {
+          this.fileList = [{ name: '封面', url: process.env.VUE_APP_BASE_API + image }]
         }
       } catch (e) {
         console.log(e)
@@ -123,7 +135,7 @@ export default {
           const { id, ...reset } = this.form
           data = reset
         }
-        data.detail = this.$refs.edit.getContent()
+        // data.content = this.$refs.edit.getContent()
         this._globalLoading()
         const result = await request(data)
         this.$message.success(result.msg || '成功')

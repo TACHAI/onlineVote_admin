@@ -1,7 +1,7 @@
 <template>
   <div class="vote-theme-page">
     <div class="operation-top">
-      <el-button size="small" type="primary" icon="el-icon-plus" @click="$router.push('/active/edit/default')">新增活动</el-button>
+      <el-button size="small" type="primary" icon="el-icon-plus" @click="$router.push('/active/edit/default')">新增投票活动</el-button>
     </div>
     <c-table ref="table" :handler="getData" @handlerlist="handlerList">
       <el-table
@@ -14,20 +14,30 @@
           type="index"
           width="60"
         />
-        <el-table-column prop="title" label="活动名称" />
-        <!-- <el-table-column label="活动封面" align="center" width="200">
+        <el-table-column prop="name" label="投票活动名称" />
+        <el-table-column label="活动封面" align="center" width="200">
           <template slot-scope="{row}">
             <el-image
-              v-if="row.cover"
-              :src="baseUrl + row.cover"
+              v-if="row.image"
+              :src="baseUrl + row.image"
               fit="contain"
             />
             <span v-else>暂无活动封面</span>
           </template>
-        </el-table-column> -->
-        <el-table-column label="活动地址">
+        </el-table-column>
+        <el-table-column label="投票活动内容">
           <template slot-scope="{row}">
-            <span>{{ row.address ? row.address : '暂无' }}</span>
+            <span>{{ row.content ? row.content : '暂无' }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="参赛方式">
+          <template slot-scope="{row}">
+            <span>{{ row.entryMethod ? row.entryMethod : '暂无' }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="参赛对象">
+          <template slot-scope="{row}">
+            <span>{{ row.participants ? row.participants : '暂无' }}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" label="活动时间" width="200">
@@ -35,15 +45,19 @@
             <span>{{ row.activitytime | datetimeFormat }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="报名人数" prop="count" />
         <el-table-column align="center" label="状态" width="80">
           <template slot-scope="{row}">
             <el-tag :type="row.status === '1' ? 'danger' : 'success'">{{ row.status === '1' ? '下架' : '上架' }}</el-tag>
           </template>
         </el-table-column>
+        <el-table-column align="center" label="类型" width="80">
+          <template slot-scope="{row}">
+            <el-tag :type="'success'">{{ row.type === '1' ? '主题活动' : '本馆活动' }}</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column label="操作" width="380">
           <template slot-scope="{row}">
-            <el-button type="success" size="mini" icon="el-icon-view" @click="handleClickTo(row.id)">名单</el-button>
+<!--            <el-button type="success" size="mini" icon="el-icon-view" @click="handleClickTo(row.id)">作品列表</el-button>-->
             <el-button type="success" size="mini" icon="el-icon-shop" @click="handleClickStatus(row.id)">上/下架</el-button>
             <el-button type="primary" size="mini" icon="el-icon-edit" @click="$router.push('/active/edit/' + row.id)">修改</el-button>
             <el-button type="danger" size="mini" icon="el-icon-delete" @click="handleClickDelete(row.id)">删除</el-button>
@@ -146,7 +160,7 @@ export default {
   //   }
   // },
   methods: {
-    // 报名详情
+    // 投票活动详情
     handleClickTo(id) {
       this.$router.push('/active/' + id)
     },

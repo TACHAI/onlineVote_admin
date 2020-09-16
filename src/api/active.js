@@ -1,19 +1,19 @@
 import request from '@/utils/request'
 import qs from 'qs'
 
-const ACTIVEADD = '/api/activity/add'
-const ACTIVEUPDATE = '/api/activity/update'
-const ACTIVELIST = '/api/activity/listVOByPage'
-const ACTIVESTATUS = '/api/activity/status'
-const ACTIVEDELETE = '/api/activity/deleteById'
-const ACTIVEUSERADD = '/api/activityuser/add'
-const ACTIVEUSERLIST = '/api/activityuser/listByPage'
-const ACTIVESELECTBYID = '/api/activity/selectById  '
+const ACTIVEADD = '/api/back/activity/add'
+const ACTIVEUPDATE = '/api/back/activity/update'
+const ACTIVELIST = '/api/back/activity/listByPage'
+const ACTIVESTATUS = '/api/back/activity/status'
+const ACTIVEDELETE = '/api/back/activity/deleteById'
+const ACTIVEUSERADD = '/api/back/activity/add'
+const ACTIVEUSERLIST = '/api/back/activity/listByPage'
+const ACTIVESELECTBYID = '/api/back/activity/selectById  '
 // const ACTIVEEXPORT = '/api/activityuser/exportExcelUser'
 
 /**
  *
- * @description 新增活动
+ * @description 新增投票活动
  * @export
  * @param {*} data
  * @returns
@@ -28,7 +28,7 @@ export function activeAdd(data) {
 
 /**
  *
- * @description 更新活动
+ * @description 更新投票活动
  * @export
  * @param {*} data
  * @returns
@@ -43,7 +43,7 @@ export function activeUpdate(data) {
 
 /**
  *
- * @description 删除活动
+ * @description 删除投票活动
  * @export
  * @param {*} id
  * @returns
@@ -58,7 +58,7 @@ export function activeDelete(id) {
 
 /**
  *
- * @description 活动上架下架
+ * @description 投票活动上架下架
  * @export
  * @param {*} id
  * @returns
