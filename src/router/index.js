@@ -90,15 +90,6 @@ export const constantRoutes = [
           title: '活动编辑',
           noCache: true
         }
-      },
-      {
-        path: '/active/:activeId([1-9]\\d*)',
-        component: () => import('@/views/active/enroll'),
-        name: 'Enroll',
-        hidden: true,
-        meta: {
-          title: '报名人员列表'
-        }
       }
     ]
   },
@@ -117,7 +108,7 @@ export const constantRoutes = [
         component: ()=>import('@/views/work/'),
         name: 'Work',
         meta: {
-          title: '投票作品',
+          title: '作品列表',
           icon: 'el-icon-star-on'
         }
       },
@@ -131,6 +122,37 @@ export const constantRoutes = [
           noCache: true
         }
       },
+    ]
+  },
+  {
+    path: '/dict',
+    component: Layout,
+    redirect: '/dict/default',
+    meta:{
+      title: '数据字典',
+      icon: 'el-icon-s-cooperation',
+      breadcrumb: false
+    },
+    children: [
+      {
+        path: '/dict/default',
+        component: ()=>import('@/views/dict/index'),
+        name: 'Dict',
+        meta: {
+          title: '数据字典',
+          icon: 'el-icon-s-cooperation'
+        }
+      },
+      {
+        path: '/dict/edit/:dictId(default|[1-9]\\d*)',
+        component: () => import('@/views/dict/edit'),
+        name: 'DictEdit',
+        hidden: true,
+        meta: {
+          title: '字典编辑',
+          noCache: true
+        }
+      }
     ]
   },
   {

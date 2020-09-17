@@ -8,7 +8,7 @@ const ACTIVESTATUS = '/api/back/activity/status'
 const ACTIVEDELETE = '/api/back/activity/deleteById'
 const ACTIVEUSERADD = '/api/back/activity/add'
 const ACTIVEUSERLIST = '/api/back/activity/listByPage'
-const ACTIVESELECTBYID = '/api/back/activity/selectById  '
+const ACTIVESELECTBYID = '/api/back/activity/selectById'
 // const ACTIVEEXPORT = '/api/activityuser/exportExcelUser'
 
 /**
@@ -138,8 +138,10 @@ export function activeUserList(pageSize, pageNumber, activityId) {
 export function activeSelectById(id) {
   return request({
     url: ACTIVESELECTBYID,
-    method: 'POST',
-    data: qs.stringify({ id })
+    method: 'GET',
+    params:{
+      id
+    }
   })
 }
 
